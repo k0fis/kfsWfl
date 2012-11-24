@@ -1,0 +1,56 @@
+
+<project name="kfsWfl" basedir="." default="build">
+
+    <target name="clear">
+        <delete dir="build" />
+    </target>
+
+    <target name="build" depends="clear" >
+        <tstamp>
+            <format property="logtime" pattern="HH:mm:ss"/>
+        </tstamp>
+        <echo level="info">Begin kfsWfl JAR ${logtime}</echo>
+        <mkdir dir="dist" />
+        <mkdir dir="build" />
+    
+        <path id="build.classpath">
+            <fileset dir="lib">
+                <include name="**/*.jar"></include>
+            </fileset>
+        </path>
+        
+        <javac 
+            destdir="build" 
+            debug="true" 
+            encoding="UTF-8" 
+            classpathref="build.classpath"
+            includeantruntime="false" >
+            <compilerarg value="-Xlint:unchecked" />
+            <src path="src" />
+            <include name="kfs/kfsDbi/*.java" />
+            <include name="kfs/kfsWfl/*.java" />
+            <include name="kfs/utils/kfsdbTools.java" />
+            <include name="kfs/kfsInfo.java" />
+        </javac>
+    
+        <jar jarfile="dist/kfsWfl.jar" basedir="build" >
+            <manifest>
+                <attribute name="Main-class"             value="kfs.kfsInfo" />
+                <attribute name="Main-Date"              value="${logtime}"/>
+                <attribute name="Implementation-Title"   value="kfsWfl" />
+                <attribute name="Implementation-Vendor"  value="pavel.drimalka@gmail.com" />
+            </manifest>
+            <zipfileset src="lib/dsn.jar" excludes="META-INF/**" />
+            <zipfileset src="lib/imap.jar" excludes="META-INF/**" />
+            <zipfileset src="lib/mail.jar" excludes="META-INF/**" />
+            <zipfileset src="lib/mailapi.jar" excludes="META-INF/**" />
+            <zipfileset src="lib/smtp.jar" excludes="META-INF/**" />
+        </jar>
+        <tstamp>
+            <format property="logtime2" pattern="HH:mm:ss"/>
+        </tstamp>
+        <echo level="info" message="Done kfsWfl JAR ${logtime2}"/>
+    </target>
+
+
+</project>
