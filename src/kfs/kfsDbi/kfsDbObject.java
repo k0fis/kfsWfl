@@ -352,7 +352,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
     
     public String sqlFullTextSearch() {
-        if ((ftCols == null) || (ftCols.length > 0)) {
+        if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
         } 
         String r = "SELECT ";
@@ -379,7 +379,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
 
     public String createFullTextIndex() {
-        if ((ftCols == null) || (ftCols.length > 0)) {
+        if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
         } 
         String s = "CREATE FULLTEXT INDEX FT_" + getName() + " ON " + getName() + "( ";
