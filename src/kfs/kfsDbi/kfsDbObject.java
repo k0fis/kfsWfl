@@ -35,7 +35,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return this.allCols;
     }
 
-    protected void setFullTextColumns(final kfsDbiColumn [] cols, final kfsDbiColumn[] what) {
+    protected void setFullTextColumns(final kfsDbiColumn[] what, final kfsDbiColumn [] cols) {
         ftCols = cols;
         ftColsWhat = what;
     }

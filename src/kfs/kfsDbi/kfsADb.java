@@ -38,7 +38,7 @@ public abstract class kfsADb {
     protected abstract Collection<kfsDbiTable> getDbObjects();
 
     protected Collection<kfsDbiTable> getFulltextObjects() {
-        return Arrays.asList();
+        return Arrays.<kfsDbiTable>asList();
     }
     
     protected kfsDbServerType getServerType() {
