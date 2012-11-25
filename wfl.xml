@@ -13,17 +13,10 @@
         <mkdir dir="dist" />
         <mkdir dir="build" />
     
-        <path id="build.classpath">
-            <fileset dir="lib">
-                <include name="**/*.jar"></include>
-            </fileset>
-        </path>
-        
         <javac 
             destdir="build" 
             debug="true" 
             encoding="UTF-8" 
-            classpathref="build.classpath"
             includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <src path="src" />
@@ -40,11 +33,6 @@
                 <attribute name="Implementation-Title"   value="kfsWfl" />
                 <attribute name="Implementation-Vendor"  value="pavel.drimalka@gmail.com" />
             </manifest>
-            <zipfileset src="lib/dsn.jar" excludes="META-INF/**" />
-            <zipfileset src="lib/imap.jar" excludes="META-INF/**" />
-            <zipfileset src="lib/mail.jar" excludes="META-INF/**" />
-            <zipfileset src="lib/mailapi.jar" excludes="META-INF/**" />
-            <zipfileset src="lib/smtp.jar" excludes="META-INF/**" />
         </jar>
         <tstamp>
             <format property="logtime2" pattern="HH:mm:ss"/>
