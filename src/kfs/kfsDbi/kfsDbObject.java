@@ -17,12 +17,14 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     protected kfsDbiColumn[] allCols = null;
     private kfsDbiColumn[] updUpdSet = null;
     private kfsDbiColumn[] updIds = null;
+    private kfsDbiColumn[] ftCols = null;
+    private kfsDbiColumn[] ftColsWhat = null;
     private kfsDbiColumnComparator[] sortCols = null;
 
     protected kfsDbObject(final kfsDbServerType serverType, final String t_name) {
         this(serverType, t_name, (new kfsNames().add(t_name, "_").getCapitalizeName(" ")));
     }
-    
+
     protected kfsDbObject(final kfsDbServerType serverType, final String t_name, final String label) {
         this.t_name = t_name;
         this.t_label = label;
@@ -33,6 +35,10 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return this.allCols;
     }
 
+    protected void setFullTextColumns(final kfsDbiColumn [] cols, final kfsDbiColumn[] what) {
+        ftCols = cols;
+        ftColsWhat = what;
+    }
     protected void setColumns(final kfsDbiColumn[] allCols) {
         this.allCols = allCols;
     }
@@ -235,7 +241,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     protected void setObject(kfsRowData row, int column, Object obj) {
         row.setObject(column, obj);
     }
-    
+
     @Override
     public void psInsertGetAutoKeys(ResultSet ps, kfsRowData row) throws SQLException {
         for (int i = 0; i < updIds.length; i++) {
@@ -339,5 +345,53 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     @Override
     public kfsIPojoObj getPojo(kfsRowData row) {
         return null;
+    }
+
+    public void psFullTextSearch(PreparedStatement ps, String fnd) throws SQLException {
+        ps.setString(1, fnd);
+    }
+    
+    public String sqlFullTextSearch() {
+        if ((ftCols == null) || (ftCols.length > 0)) {
+            return "";
+        } 
+        String r = "SELECT ";
+        boolean f = true;
+        for (kfsDbiColumn s : ftColsWhat) {
+            if (f) {
+                f = false;
+            } else {
+                r += ", ";
+            }
+            r += s.getColumnName();
+        }
+        r += " FROM " + getName() + " WHERE MATCH (";
+        f = true;
+        for (kfsDbiColumn s : ftCols) {
+            if (f) {
+                f = false;
+            } else {
+                r += ", ";
+            }
+            r += s.getColumnName();
+        }
+        return r + ") AGAINST (?)";
+    }
+
+    public String createFullTextIndex() {
+        if ((ftCols == null) || (ftCols.length > 0)) {
+            return "";
+        } 
+        String s = "CREATE FULLTEXT INDEX FT_" + getName() + " ON " + getName() + "( ";
+        boolean f = true;
+        for (kfsDbiColumn i : ftCols) {
+            if (f) {
+                f = false;
+            } else {
+                s += ", ";
+            }
+            s += i.getColumnName();
+        }
+        return s + ")";
     }
 }
