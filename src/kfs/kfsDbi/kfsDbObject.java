@@ -347,10 +347,12 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return null;
     }
 
+    @Override
     public void psFullTextSearch(PreparedStatement ps, String fnd) throws SQLException {
         ps.setString(1, fnd);
     }
     
+    @Override
     public String sqlFullTextSearch() {
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
@@ -378,6 +380,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return r + ") AGAINST (?)";
     }
 
+    @Override
     public String createFullTextIndex() {
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";

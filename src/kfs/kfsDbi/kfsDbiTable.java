@@ -30,4 +30,8 @@ public interface kfsDbiTable {
 
     boolean hasGenerateAutoKeys();
     void sort(kfsDbiColumnComparator []cols, List<kfsRowData> inp);
+    
+    void psFullTextSearch(PreparedStatement ps, String fnd) throws SQLException;
+    String sqlFullTextSearch();
+    String createFullTextIndex();
 }

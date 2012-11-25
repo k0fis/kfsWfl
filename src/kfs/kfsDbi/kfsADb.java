@@ -2,6 +2,7 @@ package kfs.kfsDbi;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,10 @@ public abstract class kfsADb {
 
     protected abstract Collection<kfsDbiTable> getDbObjects();
 
+    protected Collection<kfsDbiTable> getFulltextObjects() {
+        return Arrays.asList();
+    }
+    
     protected kfsDbServerType getServerType() {
         return serverType;
     }
@@ -206,6 +211,10 @@ public abstract class kfsADb {
                             }
                             for (String ss : ie.getCreateTableAddons()) {
                                 executeStatement.execute(ss);
+                            }
+                            String ft = ie.createFullTextIndex();
+                            if (ft.length() > 0) {
+                                executeStatement.execute(ft);
                             }
                         }
                     }
