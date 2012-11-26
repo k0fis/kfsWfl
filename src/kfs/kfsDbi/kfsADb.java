@@ -17,7 +17,7 @@ public abstract class kfsADb {
 
     public interface loadCB {
 
-        void kfsDbAddItem(kfsRowData rd, kfsDbObject inx);
+        boolean kfsDbAddItem(kfsRowData rd, kfsDbObject inx);
     };
     protected static final Logger l = Logger.getLogger(kfsADb.class.getName());
     private final HashMap<String, PreparedStatement> closingList;
