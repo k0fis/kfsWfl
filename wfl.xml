@@ -13,8 +13,7 @@
         <mkdir dir="dist" />
         <mkdir dir="build" />
     
-        <javac 
-            destdir="build" 
+        <javac destdir="build" 
             debug="true" 
             encoding="UTF-8" 
             includeantruntime="false" >
