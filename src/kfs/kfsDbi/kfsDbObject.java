@@ -260,12 +260,11 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return ret.toArray(new String[0]);
     }
 
-    @Override
-    public String getUpdate() {
+    protected static String getUpdate(String tname, kfsDbiColumn [] updUpdSet, kfsDbiColumn []updIds) {
         if (updUpdSet == null) {
             return null;
         }
-        String s = "UPDATE " + getName() + " SET ";
+        String s = "UPDATE " + tname + " SET ";
         boolean f = true;
         for (kfsDbiColumn di : updUpdSet) {
             if (f) {
@@ -285,7 +284,12 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             }
             s += di.getColumnName() + "=?";
         }
-        return s;
+        return s;        
+    }
+    
+    @Override
+    public String getUpdate() {
+        return getUpdate(getName(), updUpdSet, updIds);
     }
 
     @Override
