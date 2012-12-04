@@ -137,30 +137,38 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
 
     protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where) {
-        String s = "SELECT ";
+        return getSelect(tableName, allCols, where, false);
+    }
+    
+    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where, boolean dist) {
+        StringBuilder s = new StringBuilder();
+        s.append("SELECT ");
+        if (dist) {
+            s.append( "DISTINCT ");
+        }
         boolean f = true;
         for (kfsDbiColumn di : allCols) {
             if (f) {
                 f = false;
             } else {
-                s += ", ";
+                s.append(", ");
             }
-            s += di.getColumnName();
+            s.append( di.getColumnName());
         }
-        s += " FROM " + tableName;
+        s.append(" FROM ").append( tableName);
         if ((where != null) && (where.length > 0)) {
-            s += " WHERE ";
+            s.append(" WHERE ");
             f = true;
             for (kfsDbiColumn di : where) {
                 if (f) {
                     f = false;
                 } else {
-                    s += " AND ";
+                    s.append( " AND ");
                 }
-                s += di.getColumnName() + "=?";
+                s.append(di.getColumnName()).append( "=?");
             }
         }
-        return s;
+        return s.toString();
     }
 
     @Override
