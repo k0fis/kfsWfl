@@ -1,6 +1,7 @@
 package kfs.kfsDbi;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +52,10 @@ public class kfsBlob extends kfsColObject {
     public void setData(kfsBlobData d, kfsRowData r) {
         super.setObject(d, r);
     }
+    
+    public void setData(InputStream value, int size, kfsRowData r) { 
+        this.setObject(new kfsBlobData(value, size), r);
+    }
 
     @Override
     public void setParam(int inx, PreparedStatement ps, kfsRowData row) throws SQLException {
@@ -81,8 +86,6 @@ public class kfsBlob extends kfsColObject {
      *
      * public void setData(String value) { this.ind = new ByteArrayInputStream(value.getBytes());
      * this.length = value.length(); }
-     *
-     * public void setData(InputStream value) { this.ind = value; this.length = -1; }
      *
      * public String getStreamAsString(String encoding) throws IOException { if (this.ind != null) {
      * StringWriter writer = new StringWriter(); IOUtils.copy(this.ind, writer, encoding); return
