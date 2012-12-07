@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import kfs.kfsDbi.kfsADb;
 import kfs.kfsDbi.kfsDbServerType;
 import kfs.kfsDbi.kfsDbiTable;
@@ -85,7 +86,7 @@ public class wflDb extends kfsADb {
     }
 
     // FILE
-    public kfsRowData createFile(int idNode, String name, String user, byte [] data) {
+    public kfsRowData createFile(int idNode, String name, String user, byte[] data) {
         return dbFile.create(idNode, name, user, data);
     }
 
@@ -245,13 +246,12 @@ public class wflDb extends kfsADb {
     }
 
     public kfsRowData createUsers(String login) {
-        kfsRowData r = this.dbUser.create(login);
-        if (this.exist(dbUser, r) == Boolean.TRUE) {
-            return null;
-        } else {
+        if (this.loadUserByLogin(login) == null) {
+            kfsRowData r = this.dbUser.create(login);
             insert(dbTask, r);
             return r;
         }
+        return null;
     }
 
     public void updateUser(kfsRowData r) {
