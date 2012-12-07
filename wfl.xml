@@ -18,6 +18,7 @@
             encoding="UTF-8" 
             includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
+            <compilerarg value="-Xlint:deprecation" />
             <src path="src" />
             <include name="kfs/kfsDbi/*.java" />
             <include name="kfs/kfsWfl/*.java" />

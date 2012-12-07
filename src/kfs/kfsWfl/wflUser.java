@@ -31,7 +31,7 @@ public class wflUser extends kfsDbObject {
         this.login.setString(login, r);
         return r;
     }
-    
+    /*
     @Override
     public String getExistItemSelect() {
         return getSelect(getName(), new kfsDbiColumn[]{login}, new kfsDbiColumn[]{login});
@@ -41,6 +41,7 @@ public class wflUser extends kfsDbObject {
     public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         login.setParam(1, ps, row);
     }
+    */
     
     public String getLogin(kfsRowData r) {
         return login.getString(r);

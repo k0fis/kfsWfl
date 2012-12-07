@@ -187,6 +187,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
     }
 
+    @Deprecated
     @Override
     public String getExistItemSelect() {
         return null;
@@ -203,6 +204,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
     }
 
+    @Deprecated
     @Override
     public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
     }
