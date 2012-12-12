@@ -52,8 +52,8 @@ public class kfsBlob extends kfsColObject {
     public void setData(kfsBlobData d, kfsRowData r) {
         super.setObject(d, r);
     }
-    
-    public void setData(InputStream value, int size, kfsRowData r) { 
+
+    public void setData(InputStream value, int size, kfsRowData r) {
         this.setObject(new kfsBlobData(value, size), r);
     }
 
@@ -77,24 +77,4 @@ public class kfsBlob extends kfsColObject {
         }
     }
 
-
-    /*
-     * public void setData(Object value) { if (value instanceof String) { setData((String) value); }
-     * else if (value instanceof InputStream) { setData((InputStream) value); } else { throw new
-     * UnsupportedOperationException("Not supported yet. SetData(" + // value.getClass().getName() +
-     * ")"); } }
-     *
-     * public void setData(String value) { this.ind = new ByteArrayInputStream(value.getBytes());
-     * this.length = value.length(); }
-     *
-     * public String getStreamAsString(String encoding) throws IOException { if (this.ind != null) {
-     * StringWriter writer = new StringWriter(); IOUtils.copy(this.ind, writer, encoding); return
-     * writer.toString(); } return ""; }
-     *
-     * public byte[] getStreamAsByteArr() throws IOException { if (this.ind != null) { return
-     * IOUtils.toByteArray(this.ind); } return new byte[0]; }
-     *
-     * public void toOutputStream(OutputStream out) throws IOException { if (this.ind != null) {
-     * IOUtils.copy(this.ind, out); } }
-     */
 }
