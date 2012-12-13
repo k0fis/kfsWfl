@@ -28,7 +28,7 @@ public class wflRole extends kfsDbObject {
         this.name.setString(name, r);
         return r;
     }
-    
+    /*
     @Override
     public String getExistItemSelect() {
         return getSelect(getName(), new kfsDbiColumn[]{name}, new kfsDbiColumn[]{name});
@@ -38,6 +38,7 @@ public class wflRole extends kfsDbObject {
     public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         name.setParam(1, ps, row);
     }
+    */
     
     public int getId(kfsRowData r) {
         return id.getInt(r);

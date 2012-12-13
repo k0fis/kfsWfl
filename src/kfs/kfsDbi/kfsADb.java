@@ -85,6 +85,7 @@ public abstract class kfsADb {
         return null;
     }
 
+    @Deprecated
     protected PreparedStatement getExist(kfsDbiTable tab) {
         String sql = tab.getExistItemSelect();
         if (sql == null) {
@@ -337,6 +338,7 @@ public abstract class kfsADb {
         return ret;
     }
 
+    @Deprecated
     protected Boolean exist(kfsDbiTable tab, kfsRowData row) {
         Boolean ret = null;
         try {
@@ -435,6 +437,14 @@ public abstract class kfsADb {
         return ret;
     }
 
+    /**
+     * 
+     * @param tab
+     * @param row
+     * @return
+     * @deprecated Use insert/update
+     */
+    @Deprecated
     protected int save(kfsDbiTable tab, kfsRowData row) {
         int ret;
         if (exist(tab, row) != Boolean.TRUE) {
