@@ -65,7 +65,11 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
         if (data == null) {
             ps.setNull(inx, java.sql.Types.DATE);
         } else {
-            ps.setTimestamp(inx, new Timestamp(data.getTime()));
+            if (super.getObject(row) instanceof Timestamp) {
+                ps.setTimestamp(inx, (Timestamp)super.getObject(row));
+            } else {
+                ps.setTimestamp(inx, new Timestamp(data.getTime()));
+            }
         }
     }
 
