@@ -9,11 +9,11 @@ public class kfsPhone extends kfsString {
     public kfsPhone(String name, String label, int pos) {
         super(name, label, 20, pos, defaultCharSet);
     }
-    
+
     public boolean isValid(kfsRowData rd) {
         return true;
     }
-               
+
     @Override
     public void setString(String s, kfsRowData rd) {
         super.setString(convertPhone(s), rd);
@@ -45,13 +45,20 @@ public class kfsPhone extends kfsString {
 
         if (s.startsWith("420")) {
             return s;
-        } else if (isCzCellPhone(s)) {
+        } else if (isCzCellPhone2(s)) {
             return "420" + s;
         }
         return s;
     }
-    
+
     public static boolean isCzCellPhone(String s) {
+        if (s.startsWith("420")) {
+            return isCzCellPhone2(s.substring(3));
+        }
+        return isCzCellPhone2(s);
+    }
+
+    public static boolean isCzCellPhone2(String s) {
         return //
                 s.startsWith("77") || //
                 s.startsWith("72") || //
