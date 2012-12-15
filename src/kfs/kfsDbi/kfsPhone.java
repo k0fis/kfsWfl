@@ -59,7 +59,7 @@ public class kfsPhone extends kfsString {
     }
 
     public static boolean isCzCellPhone2(String s) {
-        return //
+        return (s.length() == 9) && (
                 s.startsWith("77") || //
                 s.startsWith("72") || //
                 s.startsWith("73") || //
@@ -70,6 +70,6 @@ public class kfsPhone extends kfsString {
                 s.startsWith("605") || //
                 s.startsWith("606") || //
                 s.startsWith("607") || //
-                s.startsWith("608");
+                s.startsWith("608"));
     }
 }
