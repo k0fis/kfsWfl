@@ -371,7 +371,7 @@ public abstract class kfsADb {
                 ps.executeUpdate();
                 return true;
             } catch (SQLException ex) {
-                l.log(Level.SEVERE, "Cannot delete Edge", ex);
+                l.log(Level.SEVERE, "Cannot delete entry: " + sql, ex);
             }
         } else {
             l.log(Level.WARNING, "Try call to Delete for DBI: {0}", tab.getName());
