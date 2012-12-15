@@ -35,10 +35,11 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return this.allCols;
     }
 
-    protected void setFullTextColumns(final kfsDbiColumn[] what, final kfsDbiColumn [] cols) {
+    protected void setFullTextColumns(final kfsDbiColumn[] what, final kfsDbiColumn[] cols) {
         ftCols = cols;
         ftColsWhat = what;
     }
+
     protected void setColumns(final kfsDbiColumn[] allCols) {
         this.allCols = allCols;
     }
@@ -139,12 +140,12 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where) {
         return getSelect(tableName, allCols, where, false);
     }
-    
+
     protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where, boolean dist) {
         StringBuilder s = new StringBuilder();
         s.append("SELECT ");
         if (dist) {
-            s.append( "DISTINCT ");
+            s.append("DISTINCT ");
         }
         boolean f = true;
         for (kfsDbiColumn di : allCols) {
@@ -153,9 +154,9 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             } else {
                 s.append(", ");
             }
-            s.append( di.getColumnName());
+            s.append(di.getColumnName());
         }
-        s.append(" FROM ").append( tableName);
+        s.append(" FROM ").append(tableName);
         if ((where != null) && (where.length > 0)) {
             s.append(" WHERE ");
             f = true;
@@ -163,9 +164,9 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
                 if (f) {
                     f = false;
                 } else {
-                    s.append( " AND ");
+                    s.append(" AND ");
                 }
-                s.append(di.getColumnName()).append( "=?");
+                s.append(di.getColumnName()).append("=?");
             }
         }
         return s.toString();
@@ -173,11 +174,15 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
 
     @Override
     public String getDelete() {
-        String r = "DELETE FROM " + getName() + " WHERE ";
+        StringBuilder r = new StringBuilder();
+        r.append("DELETE FROM ").append(getName()).append(" WHERE ");
         for (int i = 0; i < updIds.length; i++) {
-            r += updIds[i].getColumnName() + "=? ";
+            if (i > 0) {
+                r.append(" AND ");
+            }
+            r.append(updIds[i].getColumnName()).append("=? ");
         }
-        return r;
+        return r.toString();
     }
 
     @Override
@@ -270,7 +275,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return ret.toArray(new String[0]);
     }
 
-    protected static String getUpdate(String tname, kfsDbiColumn [] updUpdSet, kfsDbiColumn []updIds) {
+    protected static String getUpdate(String tname, kfsDbiColumn[] updUpdSet, kfsDbiColumn[] updIds) {
         if (updUpdSet == null) {
             return null;
         }
@@ -294,9 +299,9 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             }
             s += di.getColumnName() + "=?";
         }
-        return s;        
+        return s;
     }
-    
+
     @Override
     public String getUpdate() {
         return getUpdate(getName(), updUpdSet, updIds);
@@ -365,12 +370,12 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     public void psFullTextSearch(PreparedStatement ps, String fnd) throws SQLException {
         ps.setString(1, fnd);
     }
-    
+
     @Override
     public String sqlFullTextSearch() {
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
-        } 
+        }
         String r = "SELECT ";
         boolean f = true;
         for (kfsDbiColumn s : ftColsWhat) {
@@ -398,7 +403,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     public String createFullTextIndex() {
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
-        } 
+        }
         String s = "CREATE FULLTEXT INDEX FT_" + getName() + " ON " + getName() + "( ";
         boolean f = true;
         for (kfsDbiColumn i : ftCols) {
