@@ -488,7 +488,6 @@ public abstract class kfsADb {
     
         
     protected void copyFrom(kfsADb src) {
-        createTables();
         for (kfsDbObject dt : src.getDbObjects()) {
             final kfsDbObject df = getDbObjectByName(dt.getName());
             try {
