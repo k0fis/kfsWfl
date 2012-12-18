@@ -28,6 +28,9 @@ public class kfsBlob extends kfsColObject {
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
             return getColumnName() + " bytea ";
         }
+        if (serverType == kfsDbServerType.kfsDbiSqlite) {
+            return getColumnName() + " BLOB ";
+        }
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
