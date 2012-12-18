@@ -48,18 +48,19 @@ public abstract class kfsADb {
         }
         return null;
     }
-    
+
     protected Collection<kfsDbObject> getFulltextObjects() {
         return Arrays.<kfsDbObject>asList();
     }
-    
+
     protected kfsDbServerType getServerType() {
         return serverType;
     }
+
     protected String getSchema() {
         return schema_;
     }
-    
+
     protected PreparedStatement getInsert(kfsDbiTable tab) {
         String sql = tab.getInsertInto();
         if (!closingList.containsKey(sql)) {
@@ -141,7 +142,7 @@ public abstract class kfsADb {
     public void commit() throws SQLException {
         conn.commit();
     }
-    
+
     public void done(boolean commit, boolean rollback) throws SQLException {
         if (conn == null) {
             return;
@@ -197,6 +198,7 @@ public abstract class kfsADb {
     protected void createTables() {
         createTables(schema_);
     }
+
     protected void createTables(String schema) {
         try {
             PreparedStatement psExistTable = conn.prepareStatement(getExist());
@@ -283,7 +285,7 @@ public abstract class kfsADb {
                 }
             }
         } catch (SQLException ex) {
-            l.log(Level.SEVERE, "Error in " + inx.getName() + ".loadAll " + getSelect(inx) , ex);
+            l.log(Level.SEVERE, "Error in " + inx.getName() + ".loadAll " + getSelect(inx), ex);
         }
         return ret;
     }
@@ -334,7 +336,7 @@ public abstract class kfsADb {
     protected int loadCust(PreparedStatement ps, loadCB loadCb, kfsDbObject inx) throws SQLException {
         return loadCust(ps, loadCb, inx, inx);
     }
-    
+
     protected int loadCust(PreparedStatement ps, loadCB loadCb, kfsDbiTable inx, kfsTableDesc desc) throws SQLException {
         int ret = 0;
         ResultSet rs = null;
@@ -448,8 +450,8 @@ public abstract class kfsADb {
             l.log(Level.SEVERE, "Error in INSERT into all " + tab.getName(), ex);
         }
         return ret;
-    }    
-    
+    }
+
     protected int update(kfsDbiTable tab, kfsRowData row) {
         int ret = 0;
         try {
@@ -468,7 +470,7 @@ public abstract class kfsADb {
     }
 
     /**
-     * 
+     *
      * @param tab
      * @param row
      * @return
@@ -484,26 +486,27 @@ public abstract class kfsADb {
         }
         return ret;
     }
-    
-    
-        
-    protected void copyFrom(kfsADb src) {
-        for (kfsDbObject dt : src.getDbObjects()) {
-            final kfsDbObject df = getDbObjectByName(dt.getName());
-            try {
-                PreparedStatement ps = src.prepare(dt.getSelect());
-                src.loadCust(ps, new loadCB() {
 
-                    @Override
-                    public boolean kfsDbAddItem(kfsRowData rd) {
-                        kfsADb.this.insertAll(df, rd);
-                        return true;
-                    }
-                }, dt);
-            } catch (SQLException ex) {
-                l.log(Level.SEVERE, "Error in copy " + dt.getName(), ex);
-            }
+    private void copyFrom1(kfsADb src, final kfsDbObject dt) {
+        final kfsDbObject df = getDbObjectByName(dt.getName());
+        try {
+            PreparedStatement ps = src.prepare(dt.getSelect());
+            src.loadCust(ps, new loadCB() {
+
+                @Override
+                public boolean kfsDbAddItem(kfsRowData rd) {
+                    kfsADb.this.insertAll(df, rd);
+                    return true;
+                }
+            }, dt);
+        } catch (SQLException ex) {
+            l.log(Level.SEVERE, "Error in copy " + dt.getName(), ex);
         }
     }
 
+    protected void copyFrom(kfsADb src) {
+        for (kfsDbObject dt : src.getDbObjects()) {
+            copyFrom1(src, dt);
+        }
+    }
 }
