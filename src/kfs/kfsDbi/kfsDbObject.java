@@ -92,7 +92,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         return s + ") VALUES ( " + d + ")";
     }
-    
+
     @Override
     public String getInsertIntoAll() {
         String s = "INSERT INTO " + getName() + " ( ";
@@ -225,7 +225,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             allCols[i].setParam(y++, ps, row);
         }
     }
-    
+
     @Override
     public void psInsertAllSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         int y = 1;
@@ -432,16 +432,19 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
         }
-        String s = "CREATE FULLTEXT INDEX FT_" + getName() + " ON " + getName() + "( ";
-        boolean f = true;
-        for (kfsDbiColumn i : ftCols) {
-            if (f) {
-                f = false;
-            } else {
-                s += ", ";
+        if (serverType == kfsDbServerType.kfsDbiMysql) {
+            String s = "CREATE FULLTEXT INDEX FT_" + getName() + " ON " + getName() + "( ";
+            boolean f = true;
+            for (kfsDbiColumn i : ftCols) {
+                if (f) {
+                    f = false;
+                } else {
+                    s += ", ";
+                }
+                s += i.getColumnName();
             }
-            s += i.getColumnName();
+            return s + ")";
         }
-        return s + ")";
+        return "";
     }
 }
