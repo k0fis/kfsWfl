@@ -8,9 +8,9 @@ package kfs.kfsDbi;
 public class kfsRowData  {
 
     private Object[] data;
-    private final kfsDbObject desc;
+    private final kfsTableDesc desc;
 
-    public kfsRowData(final kfsDbObject desc) {
+    public kfsRowData(final kfsTableDesc desc) {
         this.desc = desc;
         data = new Object[desc.getColumnCount()];
     }
@@ -31,7 +31,7 @@ public class kfsRowData  {
         data[position] = obj;
     }
 
-    public kfsDbObject getDesc() {
+    public kfsTableDesc getDesc() {
         return desc;
     }
 }

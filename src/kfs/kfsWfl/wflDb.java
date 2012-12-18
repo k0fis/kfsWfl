@@ -8,10 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import kfs.kfsDbi.kfsADb;
+import kfs.kfsDbi.kfsDbObject;
 import kfs.kfsDbi.kfsDbServerType;
-import kfs.kfsDbi.kfsDbiTable;
 import kfs.kfsDbi.kfsRowData;
 
 /**
@@ -28,7 +27,7 @@ public class wflDb extends kfsADb {
     public final wflNode dbNode;
     public final wflNote dbNote;
     public final wflUser dbUser;
-    private final Collection<kfsDbiTable> lst;
+    private final Collection<kfsDbObject> lst;
 
     public wflDb(final String schema, final kfsDbServerType serverType, final Connection conn) {
         this(schema, serverType, conn, null, null, null, null, null, null);
@@ -44,12 +43,12 @@ public class wflDb extends kfsADb {
         this.dbNote = (dbNote != null) ? dbNote : new wflNote(serverType);
         this.dbFile = (dbFile != null) ? dbFile : new wflFile(serverType);
         this.dbUser = (dbUser != null) ? dbUser : new wflUser(serverType);
-        this.lst = Arrays.<kfsDbiTable>asList(this.dbEdge, this.dbTask, this.dbNode, this.dbNote, this.dbFile, this.dbUser);
+        this.lst = Arrays.<kfsDbObject>asList(this.dbEdge, this.dbTask, this.dbNode, this.dbNote, this.dbFile, this.dbUser);
         super.reCreateTables();
     }
 
     @Override
-    protected Collection<kfsDbiTable> getDbObjects() {
+    protected Collection<kfsDbObject> getDbObjects() {
         return lst;
     }
 

@@ -91,7 +91,24 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             d += "?";
         }
         return s + ") VALUES ( " + d + ")";
-
+    }
+    
+    @Override
+    public String getInsertIntoAll() {
+        String s = "INSERT INTO " + getName() + " ( ";
+        String d = "";
+        boolean f = true;
+        for (kfsDbiColumn di : allCols) {
+            if (f) {
+                f = false;
+            } else {
+                s += ", ";
+                d += ", ";
+            }
+            s += di.getColumnName();
+            d += "?";
+        }
+        return s + ") VALUES ( " + d + ")";
     }
 
     @Override
@@ -200,6 +217,17 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
 
     @Override
     public void psInsertSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
+        int y = 1;
+        for (int i = 0; i < allCols.length; i++) {
+            if (allCols[i] instanceof kfsIntAutoInc) {
+                continue;
+            }
+            allCols[i].setParam(y++, ps, row);
+        }
+    }
+    
+    @Override
+    public void psInsertAllSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         int y = 1;
         for (int i = 0; i < allCols.length; i++) {
             if (allCols[i] instanceof kfsIntAutoInc) {

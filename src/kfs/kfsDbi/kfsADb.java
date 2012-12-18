@@ -1,11 +1,7 @@
 package kfs.kfsDbi;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +13,7 @@ public abstract class kfsADb {
 
     public interface loadCB {
 
-        boolean kfsDbAddItem(kfsRowData rd, kfsDbObject inx);
+        boolean kfsDbAddItem(kfsRowData rd);
     };
     protected static final Logger l = Logger.getLogger(kfsADb.class.getName());
     private final HashMap<String, PreparedStatement> closingList;
@@ -35,10 +31,19 @@ public abstract class kfsADb {
         this.schema_ = schema;
     }
 
-    protected abstract Collection<kfsDbiTable> getDbObjects();
+    protected abstract Collection<kfsDbObject> getDbObjects();
 
-    protected Collection<kfsDbiTable> getFulltextObjects() {
-        return Arrays.<kfsDbiTable>asList();
+    public kfsDbObject getDbObjectByName(String name) {
+        for (kfsDbObject dbo : getDbObjects()) {
+            if (dbo.getName().equals(name)) {
+                return dbo;
+            }
+        }
+        return null;
+    }
+    
+    protected Collection<kfsDbObject> getFulltextObjects() {
+        return Arrays.<kfsDbObject>asList();
     }
     
     protected kfsDbServerType getServerType() {
@@ -262,7 +267,7 @@ public abstract class kfsADb {
                 while (rs.next()) {
                     kfsRowData r = new kfsRowData(inx);
                     inx.psSelectGetParameters(rs, r);
-                    loadCb.kfsDbAddItem(r, inx);
+                    loadCb.kfsDbAddItem(r);
                     ret++;
                 }
             } finally {
@@ -308,7 +313,7 @@ public abstract class kfsADb {
             while (rs.next()) {
                 kfsRowData r = new kfsRowData(inx);
                 inx.psSelectGetParameters(rs, r);
-                loadCb.kfsDbAddItem(r, inx);
+                loadCb.kfsDbAddItem(r);
                 ret++;
             }
         } finally {
@@ -320,14 +325,18 @@ public abstract class kfsADb {
     }
 
     protected int loadCust(PreparedStatement ps, loadCB loadCb, kfsDbObject inx) throws SQLException {
+        return loadCust(ps, loadCb, inx, inx);
+    }
+    
+    protected int loadCust(PreparedStatement ps, loadCB loadCb, kfsDbiTable inx, kfsTableDesc desc) throws SQLException {
         int ret = 0;
         ResultSet rs = null;
         try {
             rs = ps.executeQuery();
             while (rs.next()) {
-                kfsRowData r = new kfsRowData(inx);
+                kfsRowData r = new kfsRowData(desc);
                 inx.psSelectGetParameters(rs, r);
-                loadCb.kfsDbAddItem(r, inx);
+                loadCb.kfsDbAddItem(r);
                 ret++;
             }
         } finally {
@@ -420,6 +429,20 @@ public abstract class kfsADb {
         return ret;
     }
 
+    protected int insertAll(kfsDbiTable tab, kfsRowData row) {
+        int ret = 0;
+        try {
+            PreparedStatement ps = prepare(tab.getInsertIntoAll());
+            ps.clearParameters();
+            tab.psInsertAllSetParameters(ps, row);
+            ps.execute();
+            ret++;
+        } catch (SQLException ex) {
+            l.log(Level.SEVERE, "Error in INSERT into all " + tab.getName(), ex);
+        }
+        return ret;
+    }    
+    
     protected int update(kfsDbiTable tab, kfsRowData row) {
         int ret = 0;
         try {
@@ -454,4 +477,27 @@ public abstract class kfsADb {
         }
         return ret;
     }
+    
+    
+        
+    protected void copyFrom(kfsADb src) {
+        createTables();
+        for (kfsDbObject dt : src.getDbObjects()) {
+            final kfsDbObject df = getDbObjectByName(dt.getName());
+            try {
+                PreparedStatement ps = src.prepare(dt.getSelect());
+                src.loadCust(ps, new loadCB() {
+
+                    @Override
+                    public boolean kfsDbAddItem(kfsRowData rd) {
+                        kfsADb.this.insertAll(df, rd);
+                        return true;
+                    }
+                }, dt);
+            } catch (SQLException ex) {
+                l.log(Level.SEVERE, "Error in copy " + dt.getName(), ex);
+            }
+        }
+    }
+
 }

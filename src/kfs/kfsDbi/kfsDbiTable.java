@@ -13,6 +13,7 @@ public interface kfsDbiTable {
     String getName();
     String getLabel();
     String getInsertInto();
+    String getInsertIntoAll();
     String getCreateTable();
     String []getCreateTableAddons();
     String getSelect();
@@ -23,6 +24,7 @@ public interface kfsDbiTable {
     String getUpdate();
 
     void psInsertSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException;
+    void psInsertAllSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException;
     @Deprecated
     void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException;
     void psSelectGetParameters(ResultSet ps, kfsRowData row) throws SQLException;
