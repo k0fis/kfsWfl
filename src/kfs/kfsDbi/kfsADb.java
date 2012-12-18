@@ -487,15 +487,15 @@ public abstract class kfsADb {
         return ret;
     }
 
-    private void copyFrom1(kfsADb src, final kfsDbObject dt) {
-        final kfsDbObject df = getDbObjectByName(dt.getName());
+    private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
         try {
             PreparedStatement ps = src.prepare(dt.getSelect());
             src.loadCust(ps, new loadCB() {
 
                 @Override
                 public boolean kfsDbAddItem(kfsRowData rd) {
-                    kfsADb.this.insertAll(df, rd);
+                    if (kfsADb.this.insertAll(getDbObjectByName(dt.getName()), rd) <= 0) 
+                        throw new RuntimeException("Cannot insert data: " + dt.getName());
                     return true;
                 }
             }, dt);
