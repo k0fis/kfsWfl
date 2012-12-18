@@ -230,9 +230,6 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     public void psInsertAllSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         int y = 1;
         for (int i = 0; i < allCols.length; i++) {
-            if (allCols[i] instanceof kfsIntAutoInc) {
-                continue;
-            }
             allCols[i].setParam(y++, ps, row);
         }
     }
