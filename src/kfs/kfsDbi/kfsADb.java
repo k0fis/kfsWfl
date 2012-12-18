@@ -29,6 +29,13 @@ public abstract class kfsADb {
         this.conn = conn;
         this.serverType = serverType;
         this.schema_ = schema;
+        if ((schema != null) && !schema.isEmpty() && (serverType == kfsDbServerType.kfsDbiPostgre)) {
+            try {
+                prepare("set search_path to " + schema).execute();
+            } catch (SQLException ex) {
+                l.log(Level.SEVERE, "Cannot set search_path", ex);
+            }
+        }
     }
 
     protected abstract Collection<kfsDbObject> getDbObjects();
@@ -122,7 +129,7 @@ public abstract class kfsADb {
         return ps;
     }
 
-    protected PreparedStatement prepare(String sql) throws SQLException {
+    protected final PreparedStatement prepare(String sql) throws SQLException {
         PreparedStatement ps = closingList.get(sql);
         if (ps == null) {
             ps = conn.prepareStatement(sql);
