@@ -79,6 +79,8 @@ public class kfsBlob extends kfsColObject {
     public void getParam(int inx, ResultSet ps, kfsRowData row) throws SQLException {
         if (serverType == kfsDbServerType.kfsDbiOracle) {
             super.setObject(new kfsBlobData(ps.getBinaryStream(inx)), row);
+        } else if (serverType == kfsDbServerType.kfsDbiPostgre) {
+            super.setObject(new kfsBlobData(ps.getBytes(inx)), row);
         } else {
             Blob bl = ps.getBlob(inx);
             super.setObject(new kfsBlobData(bl.getBinaryStream()), row);
