@@ -506,8 +506,12 @@ public abstract class kfsADb {
     }
 
     protected void copyFrom(kfsADb src) {
+        copyFrom(src, src.getDbObjects());
+    }
+    
+    protected void copyFrom(kfsADb src, Collection<kfsDbObject> tabs) {
         l.info("Copy data begin");
-        for (kfsDbObject dt : src.getDbObjects()) {
+        for (kfsDbObject dt : tabs) {
             String ct = dt.getCreateTable();
             if ((ct == null) || ct.isEmpty()) {
                 l.log(Level.INFO, "Skip {0} it does not have creatye tablr", dt.getName());
@@ -517,5 +521,5 @@ public abstract class kfsADb {
             }
         }
         l.info("Copy data done");
-    }
+    }    
 }
