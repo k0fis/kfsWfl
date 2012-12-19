@@ -7,7 +7,7 @@ package kfs.kfsDbi;
 public class kfsPhone extends kfsString {
 
     public kfsPhone(String name, String label, int pos) {
-        super(name, label, 20, pos, defaultCharSet);
+        super(name, label, 22, pos, defaultCharSet);
     }
 
     public boolean isValid(kfsRowData rd) {
