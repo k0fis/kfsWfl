@@ -489,6 +489,7 @@ public abstract class kfsADb {
 
     private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
         try {
+            final String []addons = dt.getInsertIntoAllAddon();
             PreparedStatement ps = src.prepare(kfsDbObject.getSelect(dt.getName(), dt.allCols, null));
             src.loadCust(ps, new loadCB() {
 
@@ -496,6 +497,12 @@ public abstract class kfsADb {
                 public boolean kfsDbAddItem(kfsRowData rd) {
                     if (kfsADb.this.insertAll(getDbObjectByName(dt.getName()), rd) <= 0) {
                         throw new RuntimeException("Cannot insert data: " + dt.getName());
+                    }
+                    for (String s : addons)
+                        try {
+                        prepare(s).execute();
+                    } catch (SQLException ex) {
+                        l.log(Level.SEVERE, "Cannot execute InsertAllAddon: " + s, ex);
                     }
                     return true;
                 }
@@ -512,6 +519,9 @@ public abstract class kfsADb {
     protected void copyFrom(kfsADb src, Collection<kfsDbObject> tabs) {
         l.info("Copy data begin");
         for (kfsDbObject dt : tabs) {
+            
+            // oracle disable triggrer
+            
             String ct = dt.getCreateTable();
             if ((ct == null) || ct.isEmpty()) {
                 l.log(Level.INFO, "Skip {0} it does not have creatye tablr", dt.getName());
@@ -519,6 +529,8 @@ public abstract class kfsADb {
                 l.log(Level.INFO, "Copy table - {0}", dt.getName());
                 copyFrom1(src, dt);
             }
+            
+            // oracle enable trigger
         }
         l.info("Copy data done");
     }    

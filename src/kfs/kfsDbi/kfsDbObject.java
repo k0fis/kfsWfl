@@ -110,6 +110,26 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         return s + ") VALUES ( " + d + ")";
     }
+    
+    @Override
+    public String []getInsertIntoAllAddon(){
+        ArrayList<String> str = new ArrayList<String>();
+        if (serverType == kfsDbServerType.kfsDbiPostgre) {
+            for (kfsDbiColumn dc : allCols) {
+                if (dc instanceof kfsIntAutoInc) {
+                    str.add("select nextval('" + getName() + "_" + dc.getColumnName()+"_seq')");
+                }
+            }
+        } else if (serverType == kfsDbServerType.kfsDbiOracle) {
+            for (kfsDbiColumn dc : allCols) {
+                if (dc instanceof kfsIntAutoInc) {
+                    str.add("select " + getName() + "_" + dc.getColumnName()+"_seq.nextval from dual");
+                }
+            }
+        }
+        return str.toArray(new String[0]);
+    }
+
 
     @Override
     public String getCreateTable() {
