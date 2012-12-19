@@ -1,6 +1,5 @@
 package kfs.kfsDbi;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
@@ -49,22 +48,26 @@ public class kfsBlob extends kfsColObject {
     }
 
     public void setData(byte[] d, kfsRowData r) {
-        super.setObject(new kfsBlobData(new ByteArrayInputStream(d), d.length), r);
+        super.setObject(new kfsBlobData(d), r);
     }
 
     public void setData(kfsBlobData d, kfsRowData r) {
         super.setObject(d, r);
     }
 
-    public void setData(InputStream value, int size, kfsRowData r) {
-        this.setObject(new kfsBlobData(value, size), r);
+    public void setData(InputStream value, kfsRowData r) {
+        this.setObject(new kfsBlobData(value), r);
     }
 
     @Override
     public void setParam(int inx, PreparedStatement ps, kfsRowData row) throws SQLException {
         kfsBlobData data = getData(row);
-        if (data.getInputStream() != null) {
-            ps.setBinaryStream(inx, data.getInputStream());
+        if (!data.isNull()) {
+            if (serverType == kfsDbServerType.kfsDbiSqlite) {
+                ps.setBytes(inx, data.getBytes());   
+            } else {
+                ps.setBinaryStream(inx, data.getInputStream());
+            }
         } else {
             ps.setNull(inx, java.sql.Types.BLOB);
         }
@@ -73,10 +76,10 @@ public class kfsBlob extends kfsColObject {
     @Override
     public void getParam(int inx, ResultSet ps, kfsRowData row) throws SQLException {
         if (serverType == kfsDbServerType.kfsDbiOracle) {
-            super.setObject(new kfsBlobData(ps.getBinaryStream(inx), -1), row);
+            super.setObject(new kfsBlobData(ps.getBinaryStream(inx)), row);
         } else {
             Blob bl = ps.getBlob(inx);
-            super.setObject(new kfsBlobData(bl.getBinaryStream(), bl.length()), row);
+            super.setObject(new kfsBlobData(bl.getBinaryStream()), row);
         }
     }
 
