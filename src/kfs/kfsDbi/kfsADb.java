@@ -489,7 +489,7 @@ public abstract class kfsADb {
 
     private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
         try {
-            PreparedStatement ps = src.prepare(dt.getSelect());
+            PreparedStatement ps = src.prepare(kfsDbObject.getSelect(dt.getName(), dt.allCols, null));
             src.loadCust(ps, new loadCB() {
 
                 @Override
