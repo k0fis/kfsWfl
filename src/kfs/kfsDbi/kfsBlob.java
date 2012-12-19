@@ -83,7 +83,11 @@ public class kfsBlob extends kfsColObject {
             super.setObject(new kfsBlobData(ps.getBytes(inx)), row);
         } else {
             Blob bl = ps.getBlob(inx);
-            super.setObject(new kfsBlobData(bl.getBinaryStream()), row);
+            if (bl != null) {
+                super.setObject(new kfsBlobData(bl.getBinaryStream()), row);
+            } else {
+                super.setObject(new kfsBlobData(new byte[0]), row);
+            }
         }
     }
 
