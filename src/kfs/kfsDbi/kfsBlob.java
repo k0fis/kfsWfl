@@ -65,6 +65,8 @@ public class kfsBlob extends kfsColObject {
         if (!data.isNull()) {
             if (serverType == kfsDbServerType.kfsDbiSqlite) {
                 ps.setBytes(inx, data.getBytes());   
+            } else if (serverType == kfsDbServerType.kfsDbiPostgre) {
+                ps.setBinaryStream(inx, data.getInputStream(), data.getLength());
             } else {
                 ps.setBinaryStream(inx, data.getInputStream());
             }
