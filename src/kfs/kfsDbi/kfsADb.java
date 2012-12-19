@@ -494,8 +494,9 @@ public abstract class kfsADb {
 
                 @Override
                 public boolean kfsDbAddItem(kfsRowData rd) {
-                    if (kfsADb.this.insertAll(getDbObjectByName(dt.getName()), rd) <= 0) 
+                    if (kfsADb.this.insertAll(getDbObjectByName(dt.getName()), rd) <= 0) {
                         throw new RuntimeException("Cannot insert data: " + dt.getName());
+                    }
                     return true;
                 }
             }, dt);
@@ -505,8 +506,16 @@ public abstract class kfsADb {
     }
 
     protected void copyFrom(kfsADb src) {
+        l.info("Copy data begin");
         for (kfsDbObject dt : src.getDbObjects()) {
-            copyFrom1(src, dt);
+            String ct = dt.getCreateTable();
+            if ((ct == null) || ct.isEmpty()) {
+                l.log(Level.INFO, "Skip {0} it does not have creatye tablr", dt.getName());
+            } else {
+                l.log(Level.INFO, "Copy table - {0}", dt.getName());
+                copyFrom1(src, dt);
+            }
         }
+        l.info("Copy data done");
     }
 }
