@@ -488,7 +488,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             return s + ")";
         }
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
-            String s = "CREATE INDEX FT_" + getName() + " ON " + getName() + " USING gin(to_tsvector( ";
+            String s = "CREATE INDEX FT_" + getName() + " ON " + getName() + " USING gin(to_tsvector('english', ";
             boolean f = true;
             for (kfsDbiColumn i : ftCols) {
                 if (f) {
