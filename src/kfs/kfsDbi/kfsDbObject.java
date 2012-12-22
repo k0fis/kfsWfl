@@ -468,6 +468,10 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         return null;
     }
+    
+    protected String getPgFullTextFunction() {
+        return "english";
+    }
 
     @Override
     public String createFullTextIndex() {
@@ -488,7 +492,8 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             return s + ")";
         }
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
-            String s = "CREATE INDEX FT_" + getName() + " ON " + getName() + " USING gin(to_tsvector('english', ";
+            String s = "CREATE INDEX FT_" + getName() + " ON " + getName() +//
+                    " USING gin(to_tsvector('"+getPgFullTextFunction()+"', ";
             boolean f = true;
             for (kfsDbiColumn i : ftCols) {
                 if (f) {
