@@ -423,7 +423,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
                 r += s.getColumnName();
             }
             return r + ") AGAINST (?)";
-        } 
+        }
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
             String r = "SELECT ";
             boolean f = true;
@@ -449,9 +449,24 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         return null;
     }
-    
+
     protected String getPgFullTextFunction() {
         return "english";
+    }
+
+    protected static String getCreateIndex(String tableName, String indexSuffix, Collection<kfsDbiColumn> cols) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE INDEX ").append(tableName).append("_").append(indexSuffix).append(" ON ").append(tableName).append(" (");
+        boolean f = true;
+        for (kfsDbiColumn cc : cols) {
+            if (f) {
+                f = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(cc.getColumnName());
+        }
+        return sb.append(" )").toString();
     }
 
     @Override
@@ -474,7 +489,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
             String s = "CREATE INDEX FT_" + getName() + " ON " + getName() +//
-                    " USING gin(to_tsvector('"+getPgFullTextFunction()+"', ";
+                    " USING gin(to_tsvector('" + getPgFullTextFunction() + "', ";
             boolean f = true;
             for (kfsDbiColumn i : ftCols) {
                 if (f) {
