@@ -110,26 +110,25 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
         return s + ") VALUES ( " + d + ")";
     }
-    
+
     @Override
-    public String []getInsertIntoAllAddon(){
+    public String[] getInsertIntoAllAddon() {
         ArrayList<String> str = new ArrayList<String>();
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
             for (kfsDbiColumn dc : allCols) {
                 if (dc instanceof kfsIntAutoInc) {
-                    str.add("select nextval('" + getName() + "_" + dc.getColumnName()+"_seq')");
+                    str.add("select nextval('" + getName() + "_" + dc.getColumnName() + "_seq')");
                 }
             }
         } else if (serverType == kfsDbServerType.kfsDbiOracle) {
             for (kfsDbiColumn dc : allCols) {
                 if (dc instanceof kfsIntAutoInc) {
-                    str.add("select " + getName() + "_" + dc.getColumnName()+"_seq.nextval from dual");
+                    str.add("select " + getName() + "_" + dc.getColumnName() + "_seq.nextval from dual");
                 }
             }
         }
         return str.toArray(new String[0]);
     }
-
 
     @Override
     public String getCreateTable() {
@@ -421,27 +420,53 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
         }
-        String r = "SELECT ";
-        boolean f = true;
-        for (kfsDbiColumn s : ftColsWhat) {
-            if (f) {
-                f = false;
-            } else {
-                r += ", ";
+        if (serverType == kfsDbServerType.kfsDbiMssql) {
+            String r = "SELECT ";
+            boolean f = true;
+            for (kfsDbiColumn s : ftColsWhat) {
+                if (f) {
+                    f = false;
+                } else {
+                    r += ", ";
+                }
+                r += s.getColumnName();
             }
-            r += s.getColumnName();
-        }
-        r += " FROM " + getName() + " WHERE MATCH (";
-        f = true;
-        for (kfsDbiColumn s : ftCols) {
-            if (f) {
-                f = false;
-            } else {
-                r += ", ";
+            r += " FROM " + getName() + " WHERE MATCH (";
+            f = true;
+            for (kfsDbiColumn s : ftCols) {
+                if (f) {
+                    f = false;
+                } else {
+                    r += ", ";
+                }
+                r += s.getColumnName();
             }
-            r += s.getColumnName();
+            return r + ") AGAINST (?)";
+        } 
+        if (serverType == kfsDbServerType.kfsDbiPostgre) {
+            String r = "SELECT ";
+            boolean f = true;
+            for (kfsDbiColumn s : ftColsWhat) {
+                if (f) {
+                    f = false;
+                } else {
+                    r += ", ";
+                }
+                r += s.getColumnName();
+            }
+            r += " FROM " + getName() + " WHERE to_tsvector (";
+            f = true;
+            for (kfsDbiColumn s : ftCols) {
+                if (f) {
+                    f = false;
+                } else {
+                    r += "|| ' ' || ";
+                }
+                r += s.getColumnName();
+            }
+            return r + ") @@ (?)";
         }
-        return r + ") AGAINST (?)";
+        return null;
     }
 
     @Override
@@ -461,6 +486,19 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
                 s += i.getColumnName();
             }
             return s + ")";
+        }
+        if (serverType == kfsDbServerType.kfsDbiPostgre) {
+            String s = "CREATE INDEX FT_" + getName() + " ON " + getName() + " USING gin(to_tsvector( ";
+            boolean f = true;
+            for (kfsDbiColumn i : ftCols) {
+                if (f) {
+                    f = false;
+                } else {
+                    s += "|| ' ' || ";
+                }
+                s += i.getColumnName();
+            }
+            return s + "))";
         }
         return "";
     }
