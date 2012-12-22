@@ -14,7 +14,6 @@ public interface kfsDbiTable {
     String getLabel();
     String getInsertInto();
     String getInsertIntoAll();
-    String []getInsertIntoAllAddon();
     String getCreateTable();
     String []getCreateTableAddons();
     String getSelect();
