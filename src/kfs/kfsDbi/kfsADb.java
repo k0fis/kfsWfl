@@ -187,7 +187,7 @@ public abstract class kfsADb {
 
     protected void createTables(String schema) {
         try {
-            l.log(Level.FINE, "SQL exist: {0}", getExist());
+            l.log(Level.INFO, "SQL exist: {0}", getExist());
             PreparedStatement psExistTable = conn.prepareStatement(getExist());
             Statement executeStatement = conn.createStatement();
             for (kfsDbiTable ie : getDbObjects()) {
@@ -211,18 +211,18 @@ public abstract class kfsADb {
                         rs.close();
                         if (!ret) {
                             if (sql != null) {
-                                l.log(Level.FINE, "SQL create table: {0}", sql);
+                                l.log(Level.INFO, "SQL create table: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                             for (String ss : ie.getCreateTableAddons()) {
                                 sql = ss;
-                                l.log(Level.FINE, "SQL table addon: {0}", sql);
+                                l.log(Level.INFO, "SQL table addon: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                             String ft = ie.createFullTextIndex();
                             if (ft.length() > 0) {
                                 sql = ft;
-                                l.log(Level.FINE, "SQL table FullText index: {0}", sql);
+                                l.log(Level.INFO, "SQL table FullText index: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                         }
