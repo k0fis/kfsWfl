@@ -226,12 +226,12 @@ public abstract class kfsADb {
                             }
                             for (String ss : ie.getCreateTableAddons()) {
                                 sql = ss;
-                                executeStatement.execute(ss);
+                                executeStatement.execute(sql);
                             }
                             String ft = ie.createFullTextIndex();
                             if (ft.length() > 0) {
                                 sql = ft;
-                                executeStatement.execute(ft);
+                                executeStatement.execute(sql);
                             }
                         }
                     }
@@ -492,6 +492,9 @@ public abstract class kfsADb {
     private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
         try {
             final String []addons = dt.getInsertIntoAllAddon();
+            for (String s : addons) {
+                l.log(Level.INFO, "Do addon : {0}", s);
+            }
             PreparedStatement ps = src.prepare(kfsDbObject.getSelect(dt.getName(), dt.allCols, null));
             src.loadCust(ps, new loadCB() {
 

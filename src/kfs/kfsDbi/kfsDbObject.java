@@ -117,7 +117,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
             for (kfsDbiColumn dc : allCols) {
                 if (dc instanceof kfsIntAutoInc) {
-                    str.add("select nextval('" + getName() + "_" + dc.getColumnName() + "_seq')");
+                    str.add("select nextval('" + getName() + "_" + dc.getColumnName() + "_seq'::regclass)");
                 }
             }
         } else if (serverType == kfsDbServerType.kfsDbiOracle) {
