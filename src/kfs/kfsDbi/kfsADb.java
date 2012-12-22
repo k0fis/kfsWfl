@@ -225,10 +225,12 @@ public abstract class kfsADb {
                                 executeStatement.execute(sql);
                             }
                             for (String ss : ie.getCreateTableAddons()) {
+                                sql = ss;
                                 executeStatement.execute(ss);
                             }
                             String ft = ie.createFullTextIndex();
                             if (ft.length() > 0) {
+                                sql = ft;
                                 executeStatement.execute(ft);
                             }
                         }
