@@ -187,9 +187,12 @@ public abstract class kfsADb {
 
     protected void createTables(String schema) {
         try {
+            l.log(Level.FINE, "SQL exist: {0}", getExist());
             PreparedStatement psExistTable = conn.prepareStatement(getExist());
             Statement executeStatement = conn.createStatement();
             for (kfsDbiTable ie : getDbObjects()) {
+                l.log(Level.FINE, "Create table {0} begin", ie.getName());
+
                 if (ie == null) {
                     throw new RuntimeException("dbObject cannot be null");
                 }
@@ -208,15 +211,18 @@ public abstract class kfsADb {
                         rs.close();
                         if (!ret) {
                             if (sql != null) {
+                                l.log(Level.FINE, "SQL create table: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                             for (String ss : ie.getCreateTableAddons()) {
                                 sql = ss;
+                                l.log(Level.FINE, "SQL table addon: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                             String ft = ie.createFullTextIndex();
                             if (ft.length() > 0) {
                                 sql = ft;
+                                l.log(Level.FINE, "SQL table FullText index: {0}", sql);
                                 executeStatement.execute(sql);
                             }
                         }
@@ -224,12 +230,15 @@ public abstract class kfsADb {
                 } catch (Exception ex) {
                     l.log(Level.SEVERE, "Error in " + ie.getName() + ".createTable: " + sql, ex);
                 }
+                l.log(Level.FINE, "Create table {0} done", ie.getName());
+
             }
             executeStatement.close();
             psExistTable.close();
         } catch (SQLException ex) {
             l.log(Level.SEVERE, "Error in createTable", ex);
         }
+
     }
 
     protected int loadAll(ArrayList<kfsRowData> data, kfsDbObject inx) {
@@ -460,7 +469,7 @@ public abstract class kfsADb {
                 }
             }
         } catch (SQLException ex) {
-            l.log(Level.SEVERE, "Error in copy " + dt.getName()+", sql: " + sql, ex);
+            l.log(Level.SEVERE, "Error in copy " + dt.getName() + ", sql: " + sql, ex);
         }
     }
 
