@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -447,7 +449,9 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             }
             return r + ") @@ (?)";
         }
-        return null;
+        Logger.getLogger(kfsDbObject.class.getName()).log(Level.WARNING,// 
+                "for sertver {0} is not FULL TEXT search implemented yet", serverType.name());
+        return "";
     }
 
     protected String getPgFullTextFunction() {
