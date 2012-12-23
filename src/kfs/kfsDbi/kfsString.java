@@ -49,7 +49,7 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
             if (data.length() > this.maxLength) {
                 l.log(Level.WARNING, "kfsString.{0}({1}) try to set longer text ({2}): {3}", //
                         new Object[]{getColumnName(), maxLength, data.length(), data});
-                super.setObject(data.substring(1, maxLength), row);
+                super.setObject(data.substring(0, maxLength), row);
             } else {
                 super.setObject(data, row);
             }
