@@ -23,7 +23,8 @@ public class kfsPhone extends kfsString {
         if ((s == null) || (s.isEmpty())) {
             return "";
         }
-        s = s.replaceAll("\\s", "");
+        s = s.replaceAll("\\D", "");
+        /*
         if (s.startsWith("+")) {
             s = s.substring(1);
         }
@@ -39,6 +40,7 @@ public class kfsPhone extends kfsString {
         if (s.startsWith("Tel.")) {
             s = s.substring(4);
         }
+        */
         if (s.isEmpty()) {
             return s;
         }
