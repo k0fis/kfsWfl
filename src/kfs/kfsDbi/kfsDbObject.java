@@ -403,7 +403,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         if ((ftCols == null) || (ftCols.length <= 0)) {
             return "";
         }
-        if (serverType == kfsDbServerType.kfsDbiMssql) {
+        if (serverType == kfsDbServerType.kfsDbiMysql) {
             String r = "SELECT ";
             boolean f = true;
             for (kfsDbiColumn s : ftColsWhat) {
