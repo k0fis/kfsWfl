@@ -187,7 +187,7 @@ public abstract class kfsADb {
 
     protected void createTables(String schema) {
         try {
-            l.log(Level.INFO, "SQL exist: {0}", getExist());
+            l.log(Level.FINE, "SQL exist: {0}", getExist());
             PreparedStatement psExistTable = conn.prepareStatement(getExist());
             Statement executeStatement = conn.createStatement();
             for (kfsDbiTable ie : getDbObjects()) {
