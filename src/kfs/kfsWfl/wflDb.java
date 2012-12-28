@@ -44,7 +44,7 @@ public class wflDb extends kfsADb {
         this.dbFile = (dbFile != null) ? dbFile : new wflFile(serverType);
         this.dbUser = (dbUser != null) ? dbUser : new wflUser(serverType);
         this.lst = Arrays.<kfsDbObject>asList(this.dbEdge, this.dbTask, this.dbNode, this.dbNote, this.dbFile, this.dbUser);
-        super.reCreateTables();
+        super.createTables();
     }
 
     @Override
