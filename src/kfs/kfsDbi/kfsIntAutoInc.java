@@ -26,7 +26,7 @@ public class kfsIntAutoInc extends kfsInt {
             case kfsDbiPostgre:
                 return super.getColumnName() + " BIGSERIAL UNIQUE ";
             case kfsDbiSqlite:
-                return super.getColumnName() + " PRIMARY KEY ";
+                return super.getColumnName() + " INTEGER PRIMARY KEY AUTOINCREMENT ";
         }
         return super.getColumnCreateTable(serverType);
     }    
