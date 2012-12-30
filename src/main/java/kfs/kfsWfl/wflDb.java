@@ -171,6 +171,22 @@ public class wflDb extends kfsADb {
         return null;
     }
 
+    public kfsRowData getTaskbyName(String taskName) {
+        ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
+        try {
+            PreparedStatement ps = prepare(dbTask.sqlGetTaskByName());
+            ps.clearParameters();
+            dbTask.psGetTaskByName(ps, taskName);
+            loadCust(ps, ret, dbTask);
+        } catch (SQLException ex) {
+            l.log(Level.SEVERE, "Cannot execure getTack by Name: " + taskName, ex);
+        }
+        if (!ret.isEmpty()) {
+            return ret.get(0);
+        }
+        return null;
+    }
+    
     // NODE
     public boolean deleteNode(kfsRowData r) {
         return super.delete(dbNode, r);

@@ -93,6 +93,13 @@ public class wflTask extends kfsDbObject {
     public void psGetTaskById(PreparedStatement ps, int taskId) throws SQLException {
         ps.setInt(1, taskId);
     }
+    public String sqlGetTaskByName() {
+        return getSelect(getName(), getColumns(), new kfsDbiColumn[]{name});
+    }
+
+    public void psGetTaskByName(PreparedStatement ps, String taskName) throws SQLException {
+        ps.setString(1, taskName);
+    }
 
     public String getOwnerLogin(kfsRowData r) {
         return this.ownerLogin.getString(r);
