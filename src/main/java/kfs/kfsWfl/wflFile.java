@@ -23,7 +23,7 @@ public class wflFile extends kfsDbObject {
         idNode = new kfsInt("ID_NODE", "Node ID", kfsIntAutoInc.idMaxLen, pos++, false);
         name = new kfsString("FILE_NAME", "Name", 128, pos++);
         date = new kfsDate("FILE_DATE", "Date", pos++);
-        userLogin = new kfsString("USER", "Uživatel", wflUser.loginLen, pos++);
+        userLogin = new kfsString("USER_NAME", "Uživatel", wflUser.loginLen, pos++);
         data = new kfsBlob("FILE_DATA", "Data", pos++, serverType);
 
         super.setColumns(new kfsDbiColumn[]{id, idNode, name, date, userLogin, data});

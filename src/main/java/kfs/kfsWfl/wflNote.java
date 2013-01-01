@@ -24,7 +24,7 @@ public class wflNote extends kfsDbObject {
         idNode = new kfsInt("ID_NODE", "Node ID", kfsIntAutoInc.idMaxLen, pos++, false);
         text = new kfsString("NOTE_TEXT", "Text", 2048, pos++);
         date = new kfsDate("NOTE_DATE", "Date", pos++);
-        userLogin = new kfsString("USER", "U6ivatel", 30, pos++);
+        userLogin = new kfsString("USER_NAME", "U6ivatel", 30, pos++);
 
         super.setColumns(new kfsDbiColumn[]{id, idNode, text, date, userLogin,});
         super.setIdsColumns(new kfsDbiColumn[]{id});

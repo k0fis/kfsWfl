@@ -32,7 +32,7 @@ public class wflNode extends kfsDbObject {
         limitEnd = new kfsInt("LIMIT_END", "Limit to End", 4, pos++, true);
         limitWarning = new kfsInt("LIMIT_WAR", "Limit to Warning", 4, pos++, true);
         roleId = new kfsInt("ROLE_ID", "RoleId", kfsIntAutoInc.idMaxLen, pos++, true);
-        userLogin = new kfsString("USER", "Řešitel", wflUser.loginLen, pos++);
+        userLogin = new kfsString("USER_NAME", "Řešitel", wflUser.loginLen, pos++);
 
         super.setColumns(new kfsDbiColumn[]{id, idItem, name, startDate, endDate, limitEnd, limitWarning, roleId, userLogin});
         super.setUpdateColumns(new kfsDbiColumn[]{name, startDate, endDate, limitEnd, limitWarning, roleId, userLogin});
