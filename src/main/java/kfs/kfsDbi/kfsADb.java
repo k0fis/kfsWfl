@@ -160,11 +160,12 @@ public abstract class kfsADb {
                 return "SELECT table_name FROM all_tables WHERE owner=? AND table_name =?";
             case kfsDbiPostgre:
                 return "SELECT tablename FROM pg_catalog.pg_tables WHERE "
-                        + "schemaname=? AND tablename=?";
+                        + "lower(schemaname)=lower(?) AND lower(tablename)=lower(?)";
         }
         return null;
     }
 
+    @Deprecated
     protected void reCreateTables() {
         for (kfsDbiTable ie : getDbObjects()) {
             if (ie == null) {
