@@ -27,7 +27,7 @@ public class wflDb extends kfsADb {
     public final wflNode dbNode;
     public final wflNote dbNote;
     public final wflUser dbUser;
-    private final Collection<kfsDbObject> lst;
+    private final ArrayList<kfsDbObject> lst;
 
     public wflDb(final String schema, final kfsDbServerType serverType, final Connection conn) {
         this(schema, serverType, conn, null, null, null, null, null, null);
@@ -37,16 +37,22 @@ public class wflDb extends kfsADb {
             final wflEdge dbEdge, final wflTask dbTask, final wflNode dbNode,
             final wflNote dbNote, final wflFile dbFile, final wflUser dbUser) {
         super(schema, serverType, conn);
+        this.lst = new ArrayList<kfsDbObject>();
         this.dbEdge = (dbEdge != null) ? dbEdge : new wflEdge(serverType);
         this.dbTask = (dbTask != null) ? dbTask : new wflTask(serverType);
         this.dbNode = (dbNode != null) ? dbNode : new wflNode(serverType);
         this.dbNote = (dbNote != null) ? dbNote : new wflNote(serverType);
         this.dbFile = (dbFile != null) ? dbFile : new wflFile(serverType);
         this.dbUser = (dbUser != null) ? dbUser : new wflUser(serverType);
-        this.lst = Arrays.<kfsDbObject>asList(this.dbEdge, this.dbTask, this.dbNode, this.dbNote, this.dbFile, this.dbUser);
-        super.createTables();
+        this.lst.addAll(Arrays.<kfsDbObject>asList(this.dbEdge, this.dbTask, this.dbNode, //
+                this.dbNote, this.dbFile, this.dbUser));
+        //super.createTables();
     }
-
+    
+    protected void addToDboList(Collection<kfsDbObject> lst) {
+        this.lst.addAll(lst);
+    }
+    
     @Override
     protected Collection<kfsDbObject> getDbObjects() {
         return lst;
