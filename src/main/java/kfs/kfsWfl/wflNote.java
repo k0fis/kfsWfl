@@ -58,12 +58,44 @@ public class wflNote extends kfsDbObject {
     public String getUserLogin(kfsRowData r) {
         return userLogin.getString(r);
     }
-    
+
     public void psSelectByNode(PreparedStatement ps, int nodeId) throws SQLException {
         ps.setInt(1, nodeId);
     }
-    
+
     public String sqlSelectByNode() {
-        return getSelect(getName(), getColumns(), new kfsDbiColumn[] {idNode});
+        return getSelect(getName(), getColumns(), new kfsDbiColumn[]{idNode});
+    }
+
+    @Override
+    public pojo getPojo(kfsRowData row) {
+        return new pojo(row);
+    }
+
+    public class pojo extends kfsPojoObj<wflNote> {
+
+        public pojo(kfsRowData rd) {
+            super(wflNote.this, rd);
+        }
+
+        public int getId() {
+            return id.getInt(rd);
+        }
+        
+        public int getIdNode() {
+            return idNode.getInt(rd);
+        }
+        
+        public String getText() {
+            return text.getData(rd);
+        }
+        
+        public String getUser() {
+            return userLogin.getData(rd);
+        }
+        
+        public Date getData() {
+            return date.getData(rd);
+        }
     }
 }
