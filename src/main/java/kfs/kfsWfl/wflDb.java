@@ -48,42 +48,41 @@ public class wflDb extends kfsADb {
                 this.dbNote, this.dbFile, this.dbUser));
         //super.createTables();
     }
-    
+
     protected void addToDboList(Collection<kfsDbObject> lst) {
         this.lst.addAll(lst);
     }
-    
+
     @Override
     protected Collection<kfsDbObject> getDbObjects() {
         return lst;
     }
 
     // EDGE
-    public boolean deleteEdge(kfsRowData r) {
-        return super.delete(dbEdge, r);
+    public boolean deleteEdge(wflEdge.pojo r) {
+        return super.delete(dbEdge, r.kfsGetRow());
     }
 
-    public kfsRowData createEdge(int itemId, int fromNodeId, int toNodeId) {
-        kfsRowData ret = dbEdge.create(itemId, fromNodeId, toNodeId);
+    public wflEdge.pojo createEdge(wflTask.pojo item, wflNode.pojo fromNode, wflNode.pojo toNode) {
+        kfsRowData ret = dbEdge.create(item.getId(), fromNode.getId(), toNode.getId());
         super.insert(dbEdge, ret);
-        return ret;
+        return (wflEdge.pojo) dbEdge.getPojo(ret);
     }
 
-    public kfsRowData createEdge(kfsRowData item, kfsRowData fromNode, kfsRowData toNode) {
-        return createEdge(dbTask.getId(item), dbNode.getId(fromNode), dbNode.getId(toNode));
-    }
-
-    public ArrayList<kfsRowData> loadEdgesByItem(kfsRowData item) {
-        return loadEdgesByItem(dbTask.getId(item));
-    }
-
-    public ArrayList<kfsRowData> loadEdgesByItem(int itemId) {
-        ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
+    public ArrayList<wflEdge.pojo> loadEdgesByItem(wflTask.pojo item) {
+        final ArrayList<wflEdge.pojo> ret = new ArrayList<wflEdge.pojo>();
         try {
             PreparedStatement ps = prepare(dbEdge.sqlSelectByItemId());
             ps.clearParameters();
-            dbEdge.psSelectByItemId(ps, itemId);
-            super.loadCust(ps, ret, dbEdge);
+            dbEdge.psSelectByItemId(ps, item.getId());
+            super.loadCust(ps, new loadCB() {
+
+                @Override
+                public boolean kfsDbAddItem(kfsRowData rd) {
+                    ret.add((wflEdge.pojo) dbEdge.getPojo(rd));
+                    return true;
+                }
+            }, dbEdge);
         } catch (SQLException ex) {
             l.log(Level.SEVERE, "Error in loadEdgesByItem", ex);
         }
@@ -91,38 +90,38 @@ public class wflDb extends kfsADb {
     }
 
     // FILE
-    public kfsRowData createFile(int idNode, String name, String user, byte[] data) {
-        return dbFile.create(idNode, name, user, data);
+    public wflFile.pojo createFile(wflNode.pojo node, String name, wflUser.pojo user, byte[] data) {
+        return (wflFile.pojo) dbFile.getPojo(dbFile.create(node.getId(), name, user.getLogin(), data));
     }
 
     // Task
-    public kfsRowData createTask() {
-        kfsRowData ret = dbTask.create();
-        dbTask.setLastChange(ret, new Date());
-        super.insert(dbTask, ret);
+    public wflTask.pojo createTask() {
+        wflTask.pojo ret = (wflTask.pojo) dbTask.getPojo(dbTask.create());
+        ret.setLastChange(new Date());
+        super.insert(dbTask, ret.kfsGetRow());
         return ret;
     }
 
-    public kfsRowData createTaskByTemplate(kfsRowData templateTask, String ownerLogin) {
-        kfsRowData newTask = dbTask.create(dbTask.getId(templateTask), ownerLogin);
-        dbTask.setLastChange(newTask, new Date());
-        super.insert(dbTask, newTask);
-        kfsRowData[] tempNodes = loadNodesByItem(templateTask).toArray(new kfsRowData[0]);
-        kfsRowData[] tempEdges = loadEdgesByItem(templateTask).toArray(new kfsRowData[0]);
+    public wflTask.pojo createTaskByTemplate(wflTask.pojo template, wflUser.pojo owner) {
+        wflTask.pojo newTask = (wflTask.pojo) dbTask.getPojo(dbTask.create(template.getId(), owner.getLogin()));
+        newTask.setLastChange(new Date());
+        super.insert(dbTask, newTask.kfsGetRow());
+        wflNode.pojo[] tempNodes = loadNodesByItem(template).toArray(new wflNode.pojo[0]);
+        wflEdge.pojo[] tempEdges = loadEdgesByItem(template).toArray(new wflEdge.pojo[0]);
 
-        kfsRowData[] newNodes = new kfsRowData[tempNodes.length];
-        kfsRowData[] newEdges = new kfsRowData[tempEdges.length];
+        wflNode.pojo[] newNodes = new wflNode.pojo[tempNodes.length];
+        wflEdge.pojo[] newEdges = new wflEdge.pojo[tempEdges.length];
 
         for (int i = 0; i < tempNodes.length; i++) {
             newNodes[i] = createNodeByTemplate(newTask, tempNodes[i]);
         }
         for (int i = 0; i < tempEdges.length; i++) {
-            int tempToId = dbEdge.getToId(tempEdges[i]);
-            int tempFromId = dbEdge.getFromId(tempEdges[i]);
+            int tempToId = tempEdges[i].getTo();
+            int tempFromId = tempEdges[i].getFrom();
 
-            kfsRowData fromNode = null, toNode = null;
+            wflNode.pojo fromNode = null, toNode = null;
             for (int j = 0; j < tempNodes.length; j++) {
-                int tempId = dbNode.getId(tempNodes[j]);
+                int tempId = tempNodes[j].getId();
                 if (tempToId == tempId) {
                     toNode = newNodes[j];
                 }
@@ -139,29 +138,29 @@ public class wflDb extends kfsADb {
             newEdges[i] = createEdge(newTask, fromNode, toNode);
         }
         // set first node
-        int ft = dbTask.getFirstNodeId(templateTask);
+        int ft = template.getFirstNodeId();
         for (int i = 0; i < tempNodes.length; i++) {
-            if (dbNode.getId(tempNodes[i]) == ft) {
-                dbTask.setFirstNodeId(newTask, dbNode.getId(newNodes[i]));
+            if (tempNodes[i].getId() == ft) {
+                newTask.setFirstNodeId(newNodes[i].getId());
             }
         }
-        dbTask.setName(newTask, dbTask.getName(templateTask) + " (" + dbTask.getId(newTask) + ")");
-        super.update(dbTask, newTask);
+        newTask.setName(template.getName() + " (" + newTask.getId() + ")");
+        super.update(dbTask, newTask.kfsGetRow());
         return newTask;
     }
 
-    public kfsRowData createTask(int templateId, String ownerLogin) {
-        kfsRowData ret = dbTask.create(templateId, ownerLogin);
+    public wflTask.pojo createTask(wflTask.pojo template, String ownerLogin) {
+        kfsRowData ret = dbTask.create(template.getId(), ownerLogin);
         super.insert(dbTask, ret);
-        return ret;
+        return (wflTask.pojo) dbTask.getPojo(ret);
     }
 
-    public int updateTask(kfsRowData r) {
-        l.log(Level.FINEST, "Update Task id: {0} ", dbTask.getId(r));
-        return update(dbTask, r);
+    public int updateTask(wflTask.pojo r) {
+        l.log(Level.FINEST, "Update Task id: {0} ", r.getId());
+        return update(dbTask, r.kfsGetRow());
     }
 
-    public kfsRowData getTaskbyId(int taskId) {
+    public wflTask.pojo getTaskbyId(int taskId) {
         ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
         try {
             PreparedStatement ps = prepare(dbTask.sqlGetTaskById());
@@ -172,12 +171,12 @@ public class wflDb extends kfsADb {
             l.log(Level.SEVERE, "Cannot execure getTack by Id: " + taskId, ex);
         }
         if (!ret.isEmpty()) {
-            return ret.get(0);
+            return (wflTask.pojo) dbTask.getPojo(ret.get(0));
         }
         return null;
     }
 
-    public kfsRowData getTaskbyName(String taskName) {
+    public wflTask.pojo getTaskbyName(String taskName) {
         ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
         try {
             PreparedStatement ps = prepare(dbTask.sqlGetTaskByName());
@@ -188,52 +187,54 @@ public class wflDb extends kfsADb {
             l.log(Level.SEVERE, "Cannot execure getTack by Name: " + taskName, ex);
         }
         if (!ret.isEmpty()) {
-            return ret.get(0);
+            return (wflTask.pojo) dbTask.getPojo(ret.get(0));
         }
         return null;
     }
-    
+
     // NODE
-    public boolean deleteNode(kfsRowData r) {
-        return super.delete(dbNode, r);
+    public boolean deleteNode(wflNode.pojo r) {
+        return super.delete(dbNode, r.kfsGetRow());
     }
 
-    public kfsRowData createNodeByTemplate(kfsRowData item, kfsRowData nodeTemp) {
-        return createNodeByTemplate(dbTask.getId(item), nodeTemp);
-    }
-
-    public kfsRowData createNodeByTemplate(int idItem, kfsRowData nodeTemp) {
-        kfsRowData ret = dbNode.create(idItem);
-        dbNode.setName(ret, dbNode.getName(nodeTemp));
-        dbNode.setLimitEnd(ret, dbNode.getLimitEnd(nodeTemp));
-        dbNode.setLimitWarning(ret, dbNode.getLimitWarning(nodeTemp));
-        super.insert(dbNode, ret);
+    public wflNode.pojo createNodeByTemplate(wflTask.pojo item, wflNode.pojo nodeSrc) {
+        wflNode.pojo ret = createNode(item, nodeSrc.getName(), nodeSrc.getUserLogin());
+        ret.setLimitEnd(nodeSrc.getLimitEnd());
+        ret.setLimitWarning(nodeSrc.getLimitWarning());
+        super.insert(dbNode, ret.kfsGetRow());
         return ret;
     }
 
-    public kfsRowData createNode(int idItem, String name, String user) {
-        kfsRowData ret = dbNode.create(idItem);
-        dbNode.setName(ret, name);
-        dbNode.setUserLogin(ret, user);
-        super.insert(dbNode, ret);
+    public wflNode.pojo createNode(wflTask.pojo item, String name, wflUser.pojo user) {
+        return createNode(item, name, user.getLogin());
+    }
+    
+    public wflNode.pojo createNode(wflTask.pojo item, String name, String userLogin) {
+        wflNode.pojo ret = (wflNode.pojo) dbNode.getPojo(dbNode.create(item.getId()));
+        ret.setName(name);
+        ret.setUserLogin(userLogin);
+        super.insert(dbNode, ret.kfsGetRow());
         return ret;
     }
 
-    public void updateNode(kfsRowData r) {
-        super.update(dbNode, r);
+    public void updateNode(wflNode.pojo r) {
+        super.update(dbNode, r.kfsGetRow());
     }
 
-    public ArrayList<kfsRowData> loadNodesByItem(kfsRowData item) {
-        return loadNodesByItem(dbTask.getId(item));
-    }
-
-    public ArrayList<kfsRowData> loadNodesByItem(int itemId) {
-        ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
+    public ArrayList<wflNode.pojo> loadNodesByItem(wflTask.pojo item) {
+        final ArrayList<wflNode.pojo> ret = new ArrayList<wflNode.pojo>();
         try {
             PreparedStatement ps = prepare(dbNode.sqlSelectByItemId());
             ps.clearParameters();
-            dbNode.psSelectByItemId(ps, itemId);
-            super.loadCust(ps, ret, dbNode);
+            dbNode.psSelectByItemId(ps, item.getId());
+            super.loadCust(ps, new loadCB() {
+
+                @Override
+                public boolean kfsDbAddItem(kfsRowData rd) {
+                    ret.add((wflNode.pojo) dbNode.getPojo(rd));
+                    return true;
+                }
+            }, dbNode);
         } catch (SQLException ex) {
             l.log(Level.SEVERE, "Error in loadNodesByItem", ex);
         }
@@ -241,45 +242,59 @@ public class wflDb extends kfsADb {
     }
 
     /// NOTE
-    public kfsRowData createNote(int idNode, String text, String user) {
-        kfsRowData ret = dbNote.create(idNode, text, user);
+    public wflNote.pojo createNote(wflNode.pojo node, String text, wflUser.pojo user) {
+        kfsRowData ret = dbNote.create(node.getId(), text, user.getLogin());
         super.insert(dbNote, ret);
-        return ret;
+        return (wflNote.pojo) dbNote.getPojo(ret);
     }
 
-    public ArrayList<kfsRowData> loadNodeNotes(int idNode) {
-        ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
+    public ArrayList<wflNote.pojo> loadNodeNotes(wflNode.pojo node) {
+        final ArrayList<wflNote.pojo> ret = new ArrayList<wflNote.pojo>();
         try {
             PreparedStatement ps = prepare(dbNote.sqlSelectByNode());
-            dbNote.psSelectByNode(ps, idNode);
-            super.loadCust(ps, ret, dbNote);
+            dbNote.psSelectByNode(ps, node.getId());
+            super.loadCust(ps, new loadCB() {
+
+                @Override
+                public boolean kfsDbAddItem(kfsRowData rd) {
+                    ret.add((wflNote.pojo) dbNote.getPojo(rd));
+                    return true;
+                }
+            }, dbNote);
         } catch (SQLException ex) {
-            l.log(Level.SEVERE, "Cannot proccess loadNodeNotes: " + idNode, ex);
+            l.log(Level.SEVERE, "Cannot proccess loadNodeNotes: " + node.getId(), ex);
         }
         return ret;
     }
 
     // USER
-    public ArrayList<kfsRowData> loadAllUsers() {
-        ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
-        super.loadAll(ret, dbUser);
+    public ArrayList<wflUser.pojo> loadAllUsers() {
+        final ArrayList<wflUser.pojo> ret = new ArrayList<wflUser.pojo>();
+        super.loadAll(new loadCB() {
+
+            @Override
+            public boolean kfsDbAddItem(kfsRowData rd) {
+                ret.add((wflUser.pojo) dbUser.getPojo(rd));
+                return true;
+            }
+        }, dbUser);
         return ret;
     }
 
-    public kfsRowData createUsers(String login) {
+    public wflUser.pojo createUsers(String login) {
         if (this.loadUserByLogin(login) == null) {
             kfsRowData r = this.dbUser.create(login);
-            insert(dbTask, r);
-            return r;
+            insert(dbUser, r);
+            return (wflUser.pojo) dbUser.getPojo(r);
         }
         return null;
     }
 
-    public void updateUser(kfsRowData r) {
-        super.update(dbUser, r);
+    public void updateUser(wflUser.pojo r) {
+        super.update(dbUser, r.kfsGetRow());
     }
 
-    public kfsRowData loadUserByLogin(String login) {
+    public wflUser.pojo loadUserByLogin(String login) {
         ArrayList<kfsRowData> ret = new ArrayList<kfsRowData>();
         try {
             PreparedStatement ps = prepare(dbUser.sqlSelectByLogin());
@@ -292,7 +307,7 @@ public class wflDb extends kfsADb {
         if (ret.size() <= 0) {
             return null;
         } else {
-            return ret.get(0);
+            return (wflUser.pojo) dbUser.getPojo(ret.get(0));
         }
 
     }

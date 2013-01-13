@@ -34,27 +34,51 @@ public class wflEdge extends kfsDbObject {
         return ret;
     }
 
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
-    }
-
-    public int getItemId(kfsRowData r) {
-        return itemId.getInt(r);
-    }
-
-    public int getToId(kfsRowData r) {
-        return to.getInt(r);
-    }
-
-    public int getFromId(kfsRowData r) {
-        return from.getInt(r);
-    }
-
     public String sqlSelectByItemId() {
         return getSelect(getName(), getColumns(), new kfsDbiColumn[]{itemId});
     }
 
     public void psSelectByItemId(PreparedStatement ps, int itemId) throws SQLException {
         ps.setInt(1, itemId);
+    }
+
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
+    }
+
+    public class pojo extends kfsPojoObj<wflEdge> {
+
+        public pojo(kfsRowData row) {
+            super(wflEdge.this, row);
+        }
+
+        public int getId() {
+            return inx.id.getData(rd);
+        }
+
+        public Integer getItemId() {
+            return inx.itemId.getData(rd);
+        }
+
+        public void setItemId(Integer itemId) {
+            inx.itemId.setData(itemId, rd);
+        }
+
+        public Integer getFrom() {
+            return inx.from.getData(rd);
+        }
+
+        public void setFrom(Integer from) {
+            inx.from.setData(from, rd);
+        }
+
+        public Integer getTo() {
+            return inx.to.getData(rd);
+        }
+
+        public void setTo(Integer to) {
+            inx.to.setData(to, rd);
+        }
     }
 }

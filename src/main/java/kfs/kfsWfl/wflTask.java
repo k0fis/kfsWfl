@@ -46,53 +46,13 @@ public class wflTask extends kfsDbObject {
         return new kfsRowData(this);
     }
 
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
-    }
-
-    public Integer getTemplateId(kfsRowData r) {
-        return idTemplate.getInt(r);
-    }
-
-    public String getName(kfsRowData r) {
-        return name.getString(r);
-    }
-
-    public void setName(kfsRowData r, String newName) {
-        name.setString(newName, r);
-    }
-
-    public int getFirstNodeId(kfsRowData r) {
-        return firstNodeId.getInt(r);
-    }
-
-    public void setFirstNodeId(kfsRowData r, int fist) {
-        firstNodeId.setInt(fist, r);
-    }
-
-    public Date getLastChange(kfsRowData r) {
-        return lastChange.getDate(r);
-    }
-
-    public void setLastChange(kfsRowData r, Date lch) {
-        lastChange.setDate(lch, r);
-    }
-
-    public Date getArchivedDate(kfsRowData r) {
-        return archivedDate.getDate(r);
-    }
-
-    public void setArchivedDate(kfsRowData r, Date lch) {
-        archivedDate.setDate(lch, r);
-    }
-
     public String sqlGetTaskById() {
         return getSelect(getName(), getColumns(), new kfsDbiColumn[]{id});
     }
-
     public void psGetTaskById(PreparedStatement ps, int taskId) throws SQLException {
         ps.setInt(1, taskId);
     }
+    
     public String sqlGetTaskByName() {
         return getSelect(getName(), getColumns(), new kfsDbiColumn[]{name});
     }
@@ -104,21 +64,12 @@ public class wflTask extends kfsDbObject {
     public String sqlGetAllTemplates() {
         return getSelect(getName(), getColumns(), new kfsDbiColumn[]{idTemplate});
     }
-    
     public void psGetAllTemplates(PreparedStatement ps) throws SQLException {
         ps.setNull(1, java.sql.Types.INTEGER);
     }
     
-    public String getOwnerLogin(kfsRowData r) {
-        return this.ownerLogin.getString(r);
-    }
-
-    public void setOwnerLogin(kfsRowData r, String ownerLogin) {
-        this.ownerLogin.setString(ownerLogin, r);
-    }
-
     @Override
-    public pojo getPojo(kfsRowData row) {
+    public kfsIPojoObj getPojo(kfsRowData row) {
         return new pojo(row);
     }
 
@@ -168,7 +119,6 @@ public class wflTask extends kfsDbObject {
         public void setArchivedDate(Date lch) {
             archivedDate.setDate(lch, rd);
         }
-
 
         public String getOwnerLogin() {
             return ownerLogin.getString(rd);

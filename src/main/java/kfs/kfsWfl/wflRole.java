@@ -28,30 +28,7 @@ public class wflRole extends kfsDbObject {
         this.name.setString(name, r);
         return r;
     }
-    /*
-    @Override
-    public String getExistItemSelect() {
-        return getSelect(getName(), new kfsDbiColumn[]{name}, new kfsDbiColumn[]{name});
-    }
-
-    @Override
-    public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
-        name.setParam(1, ps, row);
-    }
-    */
-    
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
-    }
-    
-    public String getName(kfsRowData r) {
-        return name.getString(r);
-    }
-    
-    public void setName(kfsRowData r, String name) {
-        this.name.setString(name, r);
-    }
-    
+        
     public String sqlSelectById() {
         return getSelect(getName(), super.getColumns(), new kfsDbiColumn[] {id});
     }
@@ -59,4 +36,27 @@ public class wflRole extends kfsDbObject {
         ps.setInt(1, id);
     }
 
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
+    }
+
+    public class pojo extends kfsPojoObj<wflRole> {
+        pojo(kfsRowData row) {
+            super(wflRole.this, row);
+        }
+        
+        public int getId() {
+            return inx.id.getData(rd);
+        }
+        
+        public String getName() {
+            return inx.name.getData(rd);
+        }
+        
+        public void setName(String name) {
+            inx.name.setData(name, rd);
+        }
+    }
+    
 }

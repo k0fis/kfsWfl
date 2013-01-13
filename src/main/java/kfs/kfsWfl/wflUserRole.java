@@ -26,12 +26,25 @@ public class wflUserRole extends kfsDbObject {
         this.userLogin.setString(userLogin, r);
         return r;
     }
-    
-    public int getRoleId(kfsRowData r) {
-        return roleId.getInt(r);
+
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
     }
     
-    public String getUserId(kfsRowData r) {
-        return userLogin.getString(r);
-    }
+    public class pojo extends kfsPojoObj<wflUserRole> {
+        
+        pojo(kfsRowData row) {
+            super(wflUserRole.this, row);
+        }
+        
+        public int getId() {
+            return inx.roleId.getData(rd);
+        }
+        
+        public String getUserLogin() {
+            return inx.userLogin.getData(rd);
+        }
+        
+    }    
 }

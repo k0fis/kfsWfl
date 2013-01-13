@@ -1,5 +1,6 @@
 package kfs.kfsWfl;
 
+import java.io.InputStream;
 import java.util.Date;
 import kfs.kfsDbi.*;
 
@@ -29,8 +30,8 @@ public class wflFile extends kfsDbObject {
         super.setColumns(new kfsDbiColumn[]{id, idNode, name, date, userLogin, data});
         super.setIdsColumns(new kfsDbiColumn[]{id});
     }
-    
-    public kfsRowData create(int idNode, String name, String user, byte [] data) {
+
+    public kfsRowData create(int idNode, String name, String user, byte[] data) {
         kfsRowData ret = new kfsRowData(this);
         this.idNode.setInt(idNode, ret);
         this.name.setString(name, ret);
@@ -39,23 +40,68 @@ public class wflFile extends kfsDbObject {
         this.data.setData(data, ret);
         return ret;
     }
-    
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
+
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
     }
-    public int getIdNode(kfsRowData r) {
-        return idNode.getInt(r);
-    }
-    public String getName(kfsRowData r) {
-        return name.getString(r);
-    }
-    public Date getDate(kfsRowData r) {
-        return date.getDate(r);
-    }
-    public String getUserLogin(kfsRowData r) {
-        return userLogin.getString(r);
-    }
-    public Object getData(kfsRowData r) {
-        return data.getObject(r);
+
+    public class pojo extends kfsPojoObj<wflFile> {
+
+        public pojo(kfsRowData row) {
+            super(wflFile.this, row);
+        }
+
+        public int getId() {
+            return inx.id.getData(rd);
+        }
+
+        public Integer getIdNode() {
+            return inx.idNode.getData(rd);
+        }
+
+        public void setIdNode(Integer idNode) {
+            inx.idNode.setData(idNode, rd);
+        }
+
+        public String getName() {
+            return inx.name.getData(rd);
+        }
+
+        public void setName(String name) {
+            inx.name.setData(name, rd);
+        }
+
+        public Date getDate() {
+            return inx.date.getData(rd);
+        }
+
+        public void setDate(Date date) {
+            inx.date.setData(date, rd);
+        }
+
+        public String getUserLogin() {
+            return inx.userLogin.getData(rd);
+        }
+
+        public void setUserLogin(String userLogin) {
+            inx.userLogin.setData(userLogin, rd);
+        }
+
+        public kfsBlobData getData() {
+            return inx.data.getData(rd);
+        }
+
+        public void setData(kfsBlobData data) {
+            inx.data.setData(data, rd);
+        }
+
+        public void setData(byte [] data) {
+            inx.data.setData(data, rd);
+        }
+
+        public void setData(InputStream data) {
+            inx.data.setData(data, rd);
+        }
     }
 }

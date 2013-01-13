@@ -19,11 +19,11 @@ public class kfsAuto {
     }
 
     public void checkTask(Date date, kfsTask task) {
-        for (kfsRowData node : task.getActualNodesRowData()) {
-            Date sd = db.dbNode.getStartDate(node);
+        for (wflNode.pojo node : task.getActualNodes()) {
+            Date sd = node.getStartDate();
             if (sd != null) {
-                Integer lw = db.dbNode.getLimitWarning(node);
-                Integer le = db.dbNode.getLimitEnd(node);
+                Integer lw = node.getLimitWarning();
+                Integer le = node.getLimitEnd();
                 if (lw > 0) {
                     cal.setTime(sd);
                     cal.add(Calendar.DAY_OF_YEAR, lw);

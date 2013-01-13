@@ -39,26 +39,6 @@ public class wflNote extends kfsDbObject {
         return ret;
     }
 
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
-    }
-
-    public int getIdNode(kfsRowData r) {
-        return idNode.getInt(r);
-    }
-
-    public String getText(kfsRowData r) {
-        return text.getString(r);
-    }
-
-    public Date getDate(kfsRowData r) {
-        return date.getDate(r);
-    }
-
-    public String getUserLogin(kfsRowData r) {
-        return userLogin.getString(r);
-    }
-
     public void psSelectByNode(PreparedStatement ps, int nodeId) throws SQLException {
         ps.setInt(1, nodeId);
     }
@@ -68,7 +48,7 @@ public class wflNote extends kfsDbObject {
     }
 
     @Override
-    public pojo getPojo(kfsRowData row) {
+    public kfsIPojoObj getPojo(kfsRowData row) {
         return new pojo(row);
     }
 

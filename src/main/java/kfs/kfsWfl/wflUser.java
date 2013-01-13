@@ -23,7 +23,7 @@ public class wflUser extends kfsDbObject {
         mail = new kfsString("MAIL", "Mail", 128, pos++);
         super.setColumns(new kfsDbiColumn[]{login, name, mail});
         super.setUpdateColumns(new kfsDbiColumn[]{name, mail});
-        super.setIdsColumns(new kfsDbiColumn[] {login});
+        super.setIdsColumns(new kfsDbiColumn[]{login});
     }
 
     public kfsRowData create(String login) {
@@ -32,31 +32,43 @@ public class wflUser extends kfsDbObject {
         return r;
     }
 
-
-    public String getLogin(kfsRowData r) {
-        return login.getString(r);
-    }
-    
-    public String getName(kfsRowData r) {
-        return name.getString(r);
-    }
-    
-    public void setName(kfsRowData r, String name) {
-        this.name.setString(name, r);
-    }
-    
-    public String getMail(kfsRowData r) {
-        return this.mail.getString(r);
-    }
-    
-    public void setMail(kfsRowData r, String mail) {
-        this.mail.setString(mail, r);
-    }
-    
     public String sqlSelectByLogin() {
-        return getSelect(getName(), super.getColumns(), new kfsDbiColumn[] {login});
+        return getSelect(getName(), super.getColumns(), new kfsDbiColumn[]{login});
     }
+
     public void psSelectByLogin(PreparedStatement ps, String login) throws SQLException {
         ps.setString(1, login);
+    }
+
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
+    }
+
+    public class pojo extends kfsPojoObj<wflUser> {
+
+        pojo(kfsRowData row) {
+            super(wflUser.this, row);
+        }
+
+        public String getLogin() {
+            return inx.login.getData(rd);
+        }
+
+        public String getName() {
+            return inx.name.getData(rd);
+        }
+
+        public void setName(String name) {
+            inx.name.setData(name, rd);
+        }
+
+        public String getMail() {
+            return inx.mail.getData(rd);
+        }
+
+        public void setMail(String mail) {
+            inx.mail.setData(mail, rd);
+        }
     }
 }

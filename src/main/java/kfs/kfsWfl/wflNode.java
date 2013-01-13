@@ -38,82 +38,94 @@ public class wflNode extends kfsDbObject {
         super.setUpdateColumns(new kfsDbiColumn[]{name, startDate, endDate, limitEnd, limitWarning, roleId, userLogin});
         super.setIdsColumns(new kfsDbiColumn[]{id});
     }
-    
+
     public kfsRowData create(int idItem) {
         kfsRowData ret = new kfsRowData(this);
         this.idItem.setInt(idItem, ret);
         return ret;
     }
 
-    public int getId(kfsRowData r) {
-        return id.getInt(r);
-    }
-
-    public int getIdItem(kfsRowData r) {
-        return idItem.getInt(r);
-    }
-
-    public String getName(kfsRowData r) {
-        return name.getString(r);
-    }
-
-    public void setName(kfsRowData r, String newName) {
-        name.setString(newName, r);
-    }
-
-    public Date getStartDate(kfsRowData r) {
-        return startDate.getDate(r);
-    }
-
-    public void setStartDate(kfsRowData r, Date d) {
-        startDate.setDate(d, r);
-    }
-
-    public Date getEndDate(kfsRowData r) {
-        return endDate.getDate(r);
-    }
-
-    public void setEndDate(kfsRowData r, Date d) {
-        endDate.setDate(d, r);
-    }
-
-    public int getLimitEnd(kfsRowData r) {
-        return limitEnd.getInt(r);
-    }
-
-    public void setLimitEnd(kfsRowData r, int limit) {
-        limitEnd.setInt(limit, r);
-    }
-
-    public int getLimitWarning(kfsRowData r) {
-        return limitWarning.getInt(r);
-    }
-
-    public void setLimitWarning(kfsRowData r, int limit) {
-        limitWarning.setInt(limit, r);
-    }
-    
-    public int getRoleId(kfsRowData r) {
-        return roleId.getInt(r);
-    } 
-    
-    public void setRoleId(kfsRowData r, int rolId) {
-        this.roleId.setInt(rolId, r);
-    }
-
-    public String getUserLogin(kfsRowData r) {
-        return userLogin.getString(r);
-    }
-
-    public void setUserLogin(kfsRowData r, String newLogin) {
-        userLogin.setString(newLogin, r);
-    }
-    
     public String sqlSelectByItemId() {
-        return getSelect(getName(), getColumns(), new kfsDbiColumn[]{ idItem});
+        return getSelect(getName(), getColumns(), new kfsDbiColumn[]{idItem});
     }
-    
+
     public void psSelectByItemId(PreparedStatement ps, int itemId) throws SQLException {
         ps.setInt(1, itemId);
+    }
+
+    @Override
+    public kfsIPojoObj getPojo(kfsRowData row) {
+        return new pojo(row);
+    }
+
+    public class pojo extends kfsPojoObj<wflNode> {
+
+        public pojo(kfsRowData row) {
+            super(wflNode.this, row);
+        }
+
+        public int getId() {
+            return inx.id.getData(rd);
+        }
+
+        public Integer getIdItem() {
+            return inx.idItem.getData(rd);
+        }
+
+        public String getName() {
+            return inx.name.getData(rd);
+        }
+
+        public void setName(String name) {
+            inx.name.setData(name, rd);
+        }
+
+        public Date getStartDate() {
+            return inx.startDate.getData(rd);
+        }
+
+        public void setStartDate(Date startDate) {
+            inx.startDate.setData(startDate, rd);
+        }
+
+        public Date getEndDate() {
+            return inx.endDate.getData(rd);
+        }
+
+        public void setEndDate(Date endDate) {
+            inx.endDate.setData(endDate, rd);
+        }
+
+        public Integer getLimitEnd() {
+            return inx.limitEnd.getData(rd);
+        }
+
+        public void setLimitEnd(Integer limitEnd) {
+            inx.limitEnd.setData(limitEnd, rd);
+        }
+
+        public Integer getLimitWarning() {
+            return inx.limitWarning.getData(rd);
+        }
+
+        public void setLimitWarning(Integer limitWarning) {
+            inx.limitWarning.setData(limitWarning, rd);
+        }
+
+        public Integer getRoleId() {
+            return inx.roleId.getData(rd);
+        }
+
+        public void setRoleId(Integer roleId) {
+            inx.roleId.setData(roleId, rd);
+        }
+
+        public String getUserLogin() {
+            return inx.userLogin.getData(rd);
+        }
+
+        public void setUserLogin(String userLogin) {
+            inx.userLogin.setData(userLogin, rd);
+        }
     }
 }
