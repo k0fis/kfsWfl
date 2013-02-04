@@ -25,7 +25,7 @@ public class kfsBlob extends kfsColObject {
             return getColumnName() + " MEDIUMBLOB";
         }
         if (serverType == kfsDbServerType.kfsDbiPostgre) {
-            return getColumnName() + " oid ";
+            return getColumnName() + " bytea ";
         }
         if (serverType == kfsDbServerType.kfsDbiSqlite) {
             return getColumnName() + " BLOB ";
