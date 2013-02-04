@@ -424,7 +424,7 @@ public abstract class kfsADb {
             PreparedStatement ps = prepare(tab.getInsertIntoAll());
             ps.clearParameters();
             tab.psInsertAllSetParameters(ps, row);
-            ps.execute();
+            ps.executeUpdate();
             ret++;
         } catch (SQLException ex) {
             l.log(Level.SEVERE, "Error in INSERT into all " + tab.getName(), ex);
