@@ -190,10 +190,10 @@ public abstract class kfsADb {
         try {
             String esql = getExist();
             if (esql == null) {
-            l.log(Level.WARNING, "SQL not-exist for server: {0}", serverType);
-            return;
+                l.log(Level.WARNING, "SQL not-exist for server: {0}", serverType);
+                return;
             }
-            l.log(Level.FINE, "SQL exist: {0} - {1}", new Object[] {esql, serverType});
+            l.log(Level.FINE, "SQL exist: {0} - {1}", new Object[]{esql, serverType});
             PreparedStatement psExistTable = conn.prepareStatement(esql);
             Statement executeStatement = conn.createStatement();
             for (kfsDbiTable ie : getDbObjects()) {
@@ -500,5 +500,27 @@ public abstract class kfsADb {
             // oracle enable trigger
         }
         l.info("Copy data done");
+    }
+
+    protected int merge(kfsDbiTable tab, kfsRowData row) {
+        int ret = 0;
+        try {
+            PreparedStatement ps = prepare(tab.sqlMerge());
+            ps.clearParameters();
+            tab.psMerge(ps, row);
+            ps.execute();
+            ret++;
+            if (tab.hasGenerateAutoKeys()) {
+                l.log(Level.FINE, "has auto keys");
+                ResultSet rs = getInsert(tab).getGeneratedKeys();
+                if (rs.next()) {
+                    tab.psInsertGetAutoKeys(rs, row);
+                }
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            l.log(Level.SEVERE, "Error in INSERT into " + tab.getName(), ex);
+        }
+        return ret;
     }
 }

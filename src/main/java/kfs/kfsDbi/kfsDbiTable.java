@@ -31,6 +31,8 @@ public interface kfsDbiTable {
     void psInsertGetAutoKeys(ResultSet ps, kfsRowData row) throws SQLException;
     void psSetUpdate(PreparedStatement ps, kfsRowData row) throws SQLException;
     void psSetDelete(PreparedStatement ps, kfsRowData row) throws SQLException;
+    String sqlMerge();
+    void psMerge(PreparedStatement ps, kfsRowData row) throws SQLException;
 
     boolean hasGenerateAutoKeys();
     void sort(kfsDbiColumnComparator []cols, List<kfsRowData> inp);

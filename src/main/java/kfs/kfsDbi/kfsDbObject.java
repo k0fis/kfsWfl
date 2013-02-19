@@ -359,6 +359,47 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
 
     }
 
+    @Override
+    public String sqlMerge() {
+        if ((updUpdSet == null) || (updIds == null)) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("MERGE INTO ").append(getName()).append(" ON (");
+        boolean f = true;
+        for (kfsDbiColumn di : updIds) {
+            if (f) {
+                f = false;
+            } else {
+                sb.append(" AND ");
+            }
+            sb.append(di.getColumnName()).append("=?");
+        }
+        sb.append(") ");
+        sb.append(" WHEN NOT MATCHED (").append(getInsertInto()).append(") ");
+        sb.append(" WHEN     MATCHED (").append(getUpdate()).append(" )");
+        return sb.toString();
+    }
+    
+    @Override
+    public void psMerge(PreparedStatement ps, kfsRowData rd) throws SQLException {
+        int inx = 1;
+        for (kfsDbiColumn cc : updIds) {
+            cc.setParam(inx++, ps, rd);
+        }
+        for (kfsDbiColumn cc : allCols) {
+            if (!(cc instanceof kfsIntAutoInc)){
+                cc.setParam(inx++, ps, rd);
+            }
+        }
+        for (kfsDbiColumn cc : updUpdSet) {
+            cc.setParam(inx++, ps, rd);
+        }
+        for (kfsDbiColumn cc : updIds) {
+            cc.setParam(inx++, ps, rd);
+        }
+    }
+
     public void setSortColumns(kfsDbiColumnComparator[] cols) {
         this.sortCols = cols;
     }
