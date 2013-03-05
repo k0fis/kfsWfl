@@ -33,6 +33,8 @@ public class kfsDouble extends kfsColObject implements kfsDbiColumnComparator {
     @Override
     public String getColumnCreateTable(kfsDbServerType serverType) {
         switch (serverType) {
+            case kfsDbiSqlite:
+                return getColumnName() + " REAL "+(isColumnNullable()?"NULL":"NOT NULL") + " ";            
             case kfsDbiOracle:
                 return getColumnName() + " NUMBER " + (isColumnNullable() ? "NULL" : "NOT NULL") + " ";
         }
