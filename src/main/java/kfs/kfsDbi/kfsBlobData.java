@@ -42,7 +42,7 @@ public class kfsBlobData {
     }
 
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(bb);
+        return new ByteArrayInputStream(bb==null?new byte[0]:bb);
     }
     
     public byte[] getBytes(){

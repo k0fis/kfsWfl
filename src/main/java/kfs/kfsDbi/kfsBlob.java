@@ -1,5 +1,6 @@
 package kfs.kfsDbi;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
@@ -64,14 +65,18 @@ public class kfsBlob extends kfsColObject {
         kfsBlobData data = getData(row);
         if (!data.isNull()) {
             if (serverType == kfsDbServerType.kfsDbiSqlite) {
-                ps.setBytes(inx, data.getBytes());   
+                ps.setBytes(inx, data.getBytes());
             } else if (serverType == kfsDbServerType.kfsDbiPostgre) {
                 ps.setBinaryStream(inx, data.getInputStream(), data.getLength());
             } else {
                 ps.setBinaryStream(inx, data.getInputStream(), data.getLength());
             }
         } else {
-            ps.setNull(inx, java.sql.Types.BLOB);
+            if (serverType == kfsDbServerType.kfsDbiPostgre) {
+                ps.setBinaryStream(inx, new ByteArrayInputStream(new byte[0]));
+            } else {
+                ps.setNull(inx, java.sql.Types.BLOB);
+            }
         }
     }
 
@@ -92,5 +97,4 @@ public class kfsBlob extends kfsColObject {
             }
         }
     }
-
 }
