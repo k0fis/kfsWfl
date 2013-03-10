@@ -72,11 +72,7 @@ public class kfsBlob extends kfsColObject {
                 ps.setBinaryStream(inx, data.getInputStream(), data.getLength());
             }
         } else {
-            if (serverType == kfsDbServerType.kfsDbiPostgre) {
-                ps.setBinaryStream(inx, new ByteArrayInputStream(new byte[0]));
-            } else {
-                ps.setNull(inx, java.sql.Types.BLOB);
-            }
+            ps.setNull(inx, java.sql.Types.BLOB);
         }
     }
 
