@@ -20,7 +20,7 @@ public abstract class kfsADb {
     private final Connection conn;
     private final kfsDbServerType serverType;
     private final String schema_;
-
+    private List<kfsDbObject> dbObjects;
     protected kfsADb(
             final String schema,///
             final kfsDbServerType serverType, //
@@ -29,16 +29,26 @@ public abstract class kfsADb {
         this.conn = conn;
         this.serverType = serverType;
         this.schema_ = schema;
-        if ((schema != null) && !schema.isEmpty() && (serverType == kfsDbServerType.kfsDbiPostgre)) {
+        this.dbObjects = Arrays.<kfsDbObject>asList();
+        l.log(Level.INFO, "schema : {0}", schema);
+        if ((schema != null) && (!schema.isEmpty()) && (serverType == kfsDbServerType.kfsDbiPostgre)) {
             try {
-                prepare("set search_path to " + schema).execute();
+                String sql = "set search_path to '" + schema+"'";
+                l.log(Level.INFO, sql);
+                prepare(sql).execute();
             } catch (SQLException ex) {
                 l.log(Level.SEVERE, "Cannot set search_path", ex);
             }
         }
     }
 
-    protected abstract Collection<kfsDbObject> getDbObjects();
+    protected void setDboObjects(kfsDbObject ... objs) {
+        dbObjects = Arrays.asList(objs);
+    }
+    
+    protected Collection<kfsDbObject> getDbObjects() {
+        return dbObjects;
+    }
 
     public kfsDbObject getDbObjectByName(String name) {
         for (kfsDbObject dbo : getDbObjects()) {
@@ -452,7 +462,7 @@ public abstract class kfsADb {
     private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
         String sql = "";
         try {
-            sql = kfsDbObject.getSelect(dt.getName(), dt.allCols, null);
+            sql = kfsDbObject.getSelect(dt.getName(), dt.getColumns(), null);
             PreparedStatement ps = src.prepare(sql);
             src.loadCust(ps, new loadCB() {
 

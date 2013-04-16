@@ -16,7 +16,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     private final String t_name;
     private final String t_label;
     protected final kfsDbServerType serverType;
-    protected kfsDbiColumn[] allCols = null;
+    private kfsDbiColumn[] allCols = null;
     private kfsDbiColumn[] updUpdSet = null;
     private kfsDbiColumn[] updIds = null;
     private kfsDbiColumn[] ftCols = null;
@@ -42,15 +42,15 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         ftColsWhat = what;
     }
 
-    protected void setColumns(final kfsDbiColumn[] allCols) {
+    protected void setColumns(final kfsDbiColumn ... allCols) {
         this.allCols = allCols;
     }
 
-    protected void setIdsColumns(final kfsDbiColumn[] updIds) {
+    protected void setIdsColumns(final kfsDbiColumn ... updIds) {
         this.updIds = updIds;
     }
 
-    protected void setUpdateColumns(final kfsDbiColumn[] updSet) {
+    protected void setUpdateColumns(final kfsDbiColumn ... updSet) {
         this.updUpdSet = updSet;
     }
 
@@ -153,14 +153,14 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
 
     @Override
     public String getSelect() {
-        return getSelect(getName(), allCols, null);
+        return getSelect(getName(), allCols, null, false);
     }
 
-    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where) {
+    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn ... where) {
         return getSelect(tableName, allCols, where, false);
     }
 
-    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where, boolean dist) {
+    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn [] where, boolean dist) {
         StringBuilder s = new StringBuilder();
         s.append("SELECT ");
         if (dist) {
