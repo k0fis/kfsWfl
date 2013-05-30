@@ -42,15 +42,15 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         ftColsWhat = what;
     }
 
-    protected void setColumns(final kfsDbiColumn ... allCols) {
+    protected void setColumns(final kfsDbiColumn... allCols) {
         this.allCols = allCols;
     }
 
-    protected void setIdsColumns(final kfsDbiColumn ... updIds) {
+    protected void setIdsColumns(final kfsDbiColumn... updIds) {
         this.updIds = updIds;
     }
 
-    protected void setUpdateColumns(final kfsDbiColumn ... updSet) {
+    protected void setUpdateColumns(final kfsDbiColumn... updSet) {
         this.updUpdSet = updSet;
     }
 
@@ -156,11 +156,11 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return getSelect(getName(), allCols, null, false);
     }
 
-    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn ... where) {
+    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn... where) {
         return getSelect(tableName, allCols, where, false);
     }
 
-    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn [] where, boolean dist) {
+    protected static String getSelect(String tableName, kfsDbiColumn[] allCols, kfsDbiColumn[] where, boolean dist) {
         StringBuilder s = new StringBuilder();
         s.append("SELECT ");
         if (dist) {
@@ -191,17 +191,24 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return s.toString();
     }
 
-    @Override
-    public String getDelete() {
+    public String getDelete(kfsDbiColumn ... wcols) {
         StringBuilder r = new StringBuilder();
-        r.append("DELETE FROM ").append(getName()).append(" WHERE ");
-        for (int i = 0; i < updIds.length; i++) {
-            if (i > 0) {
-                r.append(" AND ");
+        r.append("DELETE FROM ").append(getName());
+        if ((wcols != null) && (wcols.length > 0)) {
+            r.append(" WHERE ");
+            for (int i = 0; i < wcols.length; i++) {
+                if (i > 0) {
+                    r.append(" AND ");
+                }
+                r.append(wcols[i].getColumnName()).append("=? ");
             }
-            r.append(updIds[i].getColumnName()).append("=? ");
         }
         return r.toString();
+    }
+
+    @Override
+    public String getDelete() {
+        return getDelete(updIds);
     }
 
     @Override
@@ -380,7 +387,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         sb.append(" WHEN     MATCHED (").append(getUpdate()).append(" )");
         return sb.toString();
     }
-    
+
     @Override
     public void psMerge(PreparedStatement ps, kfsRowData rd) throws SQLException {
         int inx = 1;
@@ -388,7 +395,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             cc.setParam(inx++, ps, rd);
         }
         for (kfsDbiColumn cc : allCols) {
-            if (!(cc instanceof kfsIntAutoInc)){
+            if (!(cc instanceof kfsIntAutoInc)) {
                 cc.setParam(inx++, ps, rd);
             }
         }
