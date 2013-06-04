@@ -30,7 +30,6 @@ public abstract class kfsADb {
         this.serverType = serverType;
         this.schema_ = schema;
         this.dbObjects = Arrays.<kfsDbObject>asList();
-        l.log(Level.INFO, "schema : {0}", schema);
         if ((schema != null) && (!schema.isEmpty()) && (serverType == kfsDbServerType.kfsDbiPostgre)) {
             try {
                 String sql = "set search_path to '" + schema+"'";
