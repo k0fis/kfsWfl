@@ -21,6 +21,7 @@ public abstract class kfsADb {
     private final kfsDbServerType serverType;
     private final String schema_;
     private List<kfsDbObject> dbObjects;
+
     protected kfsADb(
             final String schema,///
             final kfsDbServerType serverType, //
@@ -32,7 +33,7 @@ public abstract class kfsADb {
         this.dbObjects = Arrays.<kfsDbObject>asList();
         if ((schema != null) && (!schema.isEmpty()) && (serverType == kfsDbServerType.kfsDbiPostgre)) {
             try {
-                String sql = "set search_path to '" + schema+"'";
+                String sql = "set search_path to '" + schema + "'";
                 l.log(Level.INFO, sql);
                 prepare(sql).execute();
             } catch (SQLException ex) {
@@ -41,10 +42,10 @@ public abstract class kfsADb {
         }
     }
 
-    protected void setDboObjects(kfsDbObject ... objs) {
+    protected void setDboObjects(kfsDbObject... objs) {
         dbObjects = Arrays.asList(objs);
     }
-    
+
     protected Collection<kfsDbObject> getDbObjects() {
         return dbObjects;
     }
@@ -366,6 +367,56 @@ public abstract class kfsADb {
             }
         }
         return ret;
+    }
+
+    public int update(kfsPojoObj<? extends kfsDbObject> pj) {
+        return update(pj.kfsGetDbObject(), pj.kfsGetRow());
+    }
+
+    public kfsReleation.pjRelation createRelation (kfsReleation tab, int id1, int id2) {
+        kfsReleation.pjRelation ret = tab.create(id1, id2);
+        insert(tab, ret.kfsGetRow());
+        return ret;
+    }
+    
+    public int loadRelationsAll(kfsReleation tab, kfsReleation.lstReleation lst) {
+        return loadAll(lst, tab);
+    }
+
+    public int loadRelationsById(kfsReleation tab, int id, kfsReleation.lstReleation lst) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlSelectById());
+        tab.psSelectById1(ps, id);
+        return loadCust(ps, lst, tab);
+    }
+
+    public int loadRelationsById1(kfsReleation tab, int id1, kfsReleation.lstReleation lst) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlSelectById1());
+        tab.psSelectById1(ps, id1);
+        return loadCust(ps, lst, tab);
+    }
+
+    public int loadRelationsById2(kfsReleation tab, int id2, kfsReleation.lstReleation lst) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlSelectById2());
+        tab.psSelectById1(ps, id2);
+        return loadCust(ps, lst, tab);
+    }
+
+    public boolean deleteRelationsById(kfsReleation tab, int id) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlDeleteById());
+        tab.psSelectById1(ps, id);
+        return ps.execute();
+    }
+
+    public boolean deleteRelationsById1(kfsReleation tab, int id1) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlDeleteById1());
+        tab.psSelectById1(ps, id1);
+        return ps.execute();
+    }
+
+    public boolean deleteRelationsById2(kfsReleation tab, int id2) throws SQLException {
+        PreparedStatement ps = prepare(tab.sqlDeleteById2());
+        tab.psSelectById1(ps, id2);
+        return ps.execute();
     }
 
     protected boolean delete(kfsDbiTable tab, kfsRowData r) {
