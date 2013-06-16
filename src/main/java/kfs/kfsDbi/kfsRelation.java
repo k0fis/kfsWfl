@@ -9,17 +9,17 @@ import java.util.Iterator;
  *
  * @author pavedrim
  */
-public class kfsReleation extends kfsDbObject {
+public class kfsRelation extends kfsDbObject {
 
     private final kfsIntAutoInc id;
     private final kfsInt id1;
     private final kfsInt id2;
 
-    public kfsReleation(kfsDbServerType st, String tableName) {
+    public kfsRelation(kfsDbServerType st, String tableName) {
         this(st, tableName, "ID1", "ID2");
     }
 
-    public kfsReleation(kfsDbServerType st, String tableName, String id1Name, String id2Name) {
+    public kfsRelation(kfsDbServerType st, String tableName, String id1Name, String id2Name) {
         super(st, tableName);
         int pos = 1;
         id = new kfsIntAutoInc("ID", "Id.", pos++);
@@ -89,10 +89,10 @@ public class kfsReleation extends kfsDbObject {
         return new pjRelation(rd);
     }
 
-    public class pjRelation extends kfsPojoObj<kfsReleation> {
+    public class pjRelation extends kfsPojoObj<kfsRelation> {
 
         pjRelation(kfsRowData rd) {
-            super(kfsReleation.this, rd);
+            super(kfsRelation.this, rd);
         }
 
         public int getId() {
@@ -108,7 +108,7 @@ public class kfsReleation extends kfsDbObject {
         }
     }
 
-    public class lstReleation implements kfsADb.loadCB, Iterable<pjRelation> {
+    public class lstRelation implements kfsADb.loadCB, Iterable<pjRelation> {
 
         private final ArrayList<pjRelation> lst = new ArrayList<pjRelation>();
 

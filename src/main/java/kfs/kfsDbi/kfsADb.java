@@ -373,47 +373,47 @@ public abstract class kfsADb {
         return update(pj.kfsGetDbObject(), pj.kfsGetRow());
     }
 
-    public kfsReleation.pjRelation createRelation (kfsReleation tab, int id1, int id2) {
-        kfsReleation.pjRelation ret = tab.create(id1, id2);
+    public kfsRelation.pjRelation createRelation (kfsRelation tab, int id1, int id2) {
+        kfsRelation.pjRelation ret = tab.create(id1, id2);
         insert(tab, ret.kfsGetRow());
         return ret;
     }
     
-    public int loadRelationsAll(kfsReleation tab, kfsReleation.lstReleation lst) {
+    public int loadRelationsAll(kfsRelation tab, kfsRelation.lstRelation lst) {
         return loadAll(lst, tab);
     }
 
-    public int loadRelationsById(kfsReleation tab, int id, kfsReleation.lstReleation lst) throws SQLException {
+    public int loadRelationsById(kfsRelation tab, int id, kfsRelation.lstRelation lst) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlSelectById());
         tab.psSelectById1(ps, id);
         return loadCust(ps, lst, tab);
     }
 
-    public int loadRelationsById1(kfsReleation tab, int id1, kfsReleation.lstReleation lst) throws SQLException {
+    public int loadRelationsById1(kfsRelation tab, int id1, kfsRelation.lstRelation lst) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlSelectById1());
         tab.psSelectById1(ps, id1);
         return loadCust(ps, lst, tab);
     }
 
-    public int loadRelationsById2(kfsReleation tab, int id2, kfsReleation.lstReleation lst) throws SQLException {
+    public int loadRelationsById2(kfsRelation tab, int id2, kfsRelation.lstRelation lst) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlSelectById2());
         tab.psSelectById1(ps, id2);
         return loadCust(ps, lst, tab);
     }
 
-    public boolean deleteRelationsById(kfsReleation tab, int id) throws SQLException {
+    public boolean deleteRelationsById(kfsRelation tab, int id) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlDeleteById());
         tab.psSelectById1(ps, id);
         return ps.execute();
     }
 
-    public boolean deleteRelationsById1(kfsReleation tab, int id1) throws SQLException {
+    public boolean deleteRelationsById1(kfsRelation tab, int id1) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlDeleteById1());
         tab.psSelectById1(ps, id1);
         return ps.execute();
     }
 
-    public boolean deleteRelationsById2(kfsReleation tab, int id2) throws SQLException {
+    public boolean deleteRelationsById2(kfsRelation tab, int id2) throws SQLException {
         PreparedStatement ps = prepare(tab.sqlDeleteById2());
         tab.psSelectById1(ps, id2);
         return ps.execute();
