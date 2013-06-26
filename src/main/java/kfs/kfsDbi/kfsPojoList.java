@@ -1,5 +1,6 @@
 package kfs.kfsDbi;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -41,4 +42,7 @@ public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> imp
         return lst.values().iterator();
     }
 
+    public Collection<T> collection() {
+        return lst.values();
+    }
 }
