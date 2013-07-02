@@ -8,7 +8,73 @@ import java.util.Iterator;
  *
  * @author pavedrim
  */
-public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> implements kfsADb.loadCB, Iterable<T> {
+public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> implements kfsADb.loadCB, Collection<T> {
+
+    @Override
+    public int size() {
+        return lst.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return lst.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return lst.containsValue((T)o);
+    }
+
+    @Override
+    public Object[] toArray() {
+        return lst.values().toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return lst.values().toArray(a);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        lst.remove(getId.getUniqueId((T)o));
+        return true;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!lst.containsValue((T)o))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+       for (T o : c) {
+           add(o);
+       }
+       return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        for (Object o : c) {
+            remove((T)o);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+        lst.clear();
+    }
 
     public static interface getId<B extends kfsDbObject, ID, T extends kfsPojoObj<B>>  {
         ID getUniqueId(T pj);
@@ -23,8 +89,15 @@ public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> imp
     }
     private final HashMap<ID, T> lst = new HashMap<ID, T>();
 
-    public void add(T rd) {
+    /**
+     *
+     * @param rd
+     * @return
+     */
+    @Override
+    public boolean add(T rd) {
         lst.put(getId.getUniqueId(rd), rd);
+        return true;
     }
 
     @Override
