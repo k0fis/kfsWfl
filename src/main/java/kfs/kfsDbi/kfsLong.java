@@ -12,7 +12,7 @@ public class kfsLong extends kfsColObject implements kfsDbiColumnComparator{
 
     private final int maxLength;
 
-    public kfsLong(final String name, final String label, final int maxLength, final int position, final boolean nullable) {
+    public kfsLong(String name, String label, int maxLength, int position, boolean nullable) {
         super(name, label, position, nullable);
         this.maxLength = maxLength;
     }
