@@ -23,7 +23,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     private kfsDbiColumn[] ftColsWhat = null;
     private kfsDbiColumnComparator[] sortCols = null;
 
-    protected kfsDbObject(final kfsDbServerType serverType, final String t_name) {
+    protected kfsDbObject(kfsDbServerType serverType, String t_name) {
         this(serverType, t_name, (new kfsNames().add(t_name, "_").getCapitalizeName(" ")));
     }
 
