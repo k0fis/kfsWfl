@@ -3,5 +3,5 @@ mvn -DaltDeploymentRepository=repo::default::file:../kfsWfl-mvn/release clean de
 cd ../kfsWfl-mvn
 git pull
 git add *
-git commit -m 'release'
+git commit -a -m 'release'
 git push origin master
