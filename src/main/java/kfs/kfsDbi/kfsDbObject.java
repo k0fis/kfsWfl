@@ -218,12 +218,33 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         }
     }
 
-    @Deprecated
-    @Override
-    public String getExistItemSelect() {
-        return null;
-    }
-
+    public String getInsertIntoWithValues(kfsRowData row) {
+        String s = "INSERT INTO " + getName() + " ( ";
+        String d = "";
+        boolean f = true;
+        for (kfsDbiColumn di : allCols) {
+            if ((di instanceof kfsIntAutoInc) || (di instanceof kfsLongAutoInc)) {
+                continue;
+            }
+            if (f) {
+                f = false;
+            } else {
+                s += ", ";
+                d += ", ";
+            }
+            s += di.getColumnName();
+            Object o = di.getObject(row);
+            if (o == null) {
+                d += "null";
+            } else if (o instanceof String) {
+                d += "'" + o.toString() +"'";
+            } else {
+                d += o.toString();
+            }
+        }
+        return s + ") VALUES ( " + d + ")";
+    }    
+    
     @Override
     public void psInsertSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         int y = 1;
@@ -241,11 +262,6 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         for (int i = 0; i < allCols.length; i++) {
             allCols[i].setParam(y++, ps, row);
         }
-    }
-
-    @Deprecated
-    @Override
-    public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
     }
 
     public void resetFilterCounter() {
@@ -554,5 +570,17 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             return s + "))";
         }
         return "";
+    }
+
+    @Deprecated
+    @Override
+    public String getExistItemSelect() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Deprecated
+    @Override
+    public void psExistItemSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
