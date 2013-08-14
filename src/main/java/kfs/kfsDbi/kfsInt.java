@@ -65,6 +65,13 @@ public class kfsInt extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public void getParam(int inx, ResultSet ps, kfsRowData row) throws SQLException {
+        if (isColumnNullable()) {
+            Object o = ps.getObject(inx);
+            if (o == null) {
+                setInt(null, row);
+                return;
+            }
+        }
         setInt(ps.getInt(inx), row);
     }
 
