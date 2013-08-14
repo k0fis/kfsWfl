@@ -21,7 +21,7 @@ public class kfsRelation extends kfsDbObject {
 
     public kfsRelation(kfsDbServerType st, String tableName, String id1Name, String id2Name) {
         super(st, tableName);
-        int pos = 1;
+        int pos = 0;
         id = new kfsIntAutoInc("ID", "Id.", pos++);
         id1 = new kfsInt(id1Name, id1Name, kfsIntAutoInc.idMaxLen, pos++, false);
         id2 = new kfsInt(id2Name, id2Name, kfsIntAutoInc.idMaxLen, pos++, false);
