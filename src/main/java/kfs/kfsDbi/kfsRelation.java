@@ -112,6 +112,18 @@ public class kfsRelation extends kfsDbObject {
 
         private final ArrayList<pjRelation> lst = new ArrayList<pjRelation>();
 
+        public pjRelation find(int id1, int id2) {
+            for (pjRelation r : lst) {
+                if ((r.getId1() == id1) &&  (r.getId2() == id2))
+                    return r;
+            }
+            return null;
+        }
+        
+        public boolean remove(pjRelation pj) {
+            return lst.remove(pj);
+        }
+        
         @Override
         public boolean kfsDbAddItem(kfsRowData rd) {
             lst.add(new pjRelation(rd));
@@ -182,5 +194,5 @@ public class kfsRelation extends kfsDbObject {
         @Override
         public void remove() {
         }
-    }
+    }  
 }
