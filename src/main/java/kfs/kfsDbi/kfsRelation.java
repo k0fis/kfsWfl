@@ -100,11 +100,16 @@ public class kfsRelation extends kfsDbObject {
         }
 
         public int getId1() {
-            return inx.id2.getData(rd);
+            return inx.id1.getData(rd);
         }
 
         public int getId2() {
             return inx.id2.getData(rd);
+        }
+
+        @Override
+        public String toString() {
+            return "ID: " + Integer.toString(getId()) + ", ID1: " + Integer.toString(getId1()) + ", ID2: " + Integer.toString(getId2());
         }
     }
 
@@ -114,16 +119,21 @@ public class kfsRelation extends kfsDbObject {
 
         public pjRelation find(int id1, int id2) {
             for (pjRelation r : lst) {
-                if ((r.getId1() == id1) &&  (r.getId2() == id2))
+                if ((r.getId1() == id1) && (r.getId2() == id2)) {
                     return r;
+                }
             }
             return null;
         }
-        
+
+        public boolean add(pjRelation pj) {
+            return lst.add(pj);
+        }
+
         public boolean remove(pjRelation pj) {
             return lst.remove(pj);
         }
-        
+
         @Override
         public boolean kfsDbAddItem(kfsRowData rd) {
             lst.add(new pjRelation(rd));
@@ -135,9 +145,12 @@ public class kfsRelation extends kfsDbObject {
             return lst.iterator();
         }
 
+        public Iterator<pjRelation> getById1Iterator(final int id1) {
+            return new IteratorId(lst.iterator(), id1, null);
+        }
+
         public Iterable<pjRelation> getById1(final int id1) {
             return new Iterable<pjRelation>() {
-
                 @Override
                 public Iterator<pjRelation> iterator() {
                     return new IteratorId(lst.iterator(), id1, null);
@@ -147,7 +160,6 @@ public class kfsRelation extends kfsDbObject {
 
         public Iterable<pjRelation> getById2(final int id2) {
             return new Iterable<pjRelation>() {
-
                 @Override
                 public Iterator<pjRelation> iterator() {
                     return new IteratorId(lst.iterator(), null, id2);
@@ -167,6 +179,7 @@ public class kfsRelation extends kfsDbObject {
             this.lst = lst;
             this.id1 = id1;
             this.id2 = id2;
+            this.next = null;
         }
 
         @Override
@@ -194,5 +207,30 @@ public class kfsRelation extends kfsDbObject {
         @Override
         public void remove() {
         }
-    }  
+    }
+
+    public static abstract class relIterator<T> implements Iterator<T> {
+
+        private Iterator<pjRelation> it;
+
+        public relIterator(Iterator<pjRelation> it) {
+            this.it = it;
+        }
+
+        protected abstract T getType(pjRelation rel);
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return getType(it.next());
+        }
+
+        @Override
+        public void remove() {
+        }
+    }
 }
