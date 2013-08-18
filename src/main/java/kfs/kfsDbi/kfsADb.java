@@ -373,12 +373,16 @@ public abstract class kfsADb {
         return update(pj.kfsGetDbObject(), pj.kfsGetRow());
     }
 
-    public kfsRelation.pjRelation createRelation (kfsRelation tab, int id1, int id2) {
+    public int updateExc(kfsPojoObj<? extends kfsDbObject> pj) throws SQLException {
+        return updateExc(pj.kfsGetDbObject(), pj.kfsGetRow());
+    }
+
+    public kfsRelation.pjRelation createRelation(kfsRelation tab, int id1, int id2) {
         kfsRelation.pjRelation ret = tab.create(id1, id2);
         insert(tab, ret.kfsGetRow());
         return ret;
     }
-    
+
     public int loadRelationsAll(kfsRelation tab, kfsRelation.lstRelation lst) {
         return loadAll(lst, tab);
     }
@@ -495,18 +499,22 @@ public abstract class kfsADb {
     protected int update(kfsDbiTable tab, kfsRowData row) {
         int ret = 0;
         try {
-            PreparedStatement ps = getUpdate(tab);
-            if (ps == null) {
-                l.log(Level.WARNING, "Cannot update {0}", tab.getName());
-            } else {
-                ps.clearParameters();
-                tab.psSetUpdate(ps, row);
-                ret = ps.executeUpdate();
-            }
+            ret = updateExc(tab, row);
         } catch (SQLException ex) {
             l.log(Level.SEVERE, "Error in Update " + tab.getName(), ex);
         }
         return ret;
+    }
+
+    protected int updateExc(kfsDbiTable tab, kfsRowData row) throws SQLException {
+        PreparedStatement ps = getUpdate(tab);
+        if (ps == null) {
+            throw new SQLException("Cannot update " + tab.getName() + ": " + tab.getUpdate());
+        } else {
+            ps.clearParameters();
+            tab.psSetUpdate(ps, row);
+            return ps.executeUpdate();
+        }
     }
 
     private void copyFrom1(final kfsADb src, final kfsDbObject dt) {
