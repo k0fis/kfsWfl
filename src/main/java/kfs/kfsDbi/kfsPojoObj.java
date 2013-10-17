@@ -24,4 +24,7 @@ public class kfsPojoObj<T extends kfsDbObject> implements kfsIPojoObj {
         return inx;
     }
 
+    public String getCsv() {
+        return inx.getCsv(rd);
+    }
 }

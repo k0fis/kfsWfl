@@ -90,7 +90,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             sb.append("\n  ");
             sb.append(di.getColumnName()).append(di.appendOracleControlFile());
         }
-        sb.append(")");
+        sb.append("\n)");
         return sb.toString();
     }
 
