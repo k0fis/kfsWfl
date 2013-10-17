@@ -24,4 +24,6 @@ public interface kfsDbiColumn {
     void setParam(int inx, PreparedStatement ps, kfsRowData row) throws SQLException;
     void getParam(int inx, ResultSet ps, kfsRowData row) throws SQLException;
     void resetFilterCounter();
+    String appendOracleControlFile();
+    String exportToCsv(kfsRowData row);
 }

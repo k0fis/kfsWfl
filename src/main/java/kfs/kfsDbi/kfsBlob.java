@@ -93,4 +93,14 @@ public class kfsBlob extends kfsColObject {
             }
         }
     }
+
+    @Override
+    public String appendOracleControlFile() {
+        return "";
+    }
+
+    @Override
+    public String exportToCsv(kfsRowData row) {
+        return "";
+    }
 }

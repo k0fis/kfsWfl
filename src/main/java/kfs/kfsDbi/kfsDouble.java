@@ -65,4 +65,15 @@ public class kfsDouble extends kfsColObject implements kfsDbiColumnComparator {
     public int compare(kfsRowData t, kfsRowData t1) {
         return getSortDirection() * getData(t).compareTo(getData(t1));
     }
+
+    @Override
+    public String appendOracleControlFile() {
+        return "";
+    }
+
+    @Override
+    public String exportToCsv(kfsRowData row) {
+        return Double.toString(getData(row));
+    }
+
 }

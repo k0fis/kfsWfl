@@ -120,4 +120,15 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
     public int compare(kfsRowData t, kfsRowData t1) {
         return getSortDirection() * getData(t).compareTo(getData(t1));
     }
+
+    @Override
+    public String appendOracleControlFile() {
+        return " \"SUBSTR(:"+ getColumnName() +", 1, "+ getColumnMaxLength() +")\"";
+    }
+
+    @Override
+    public String exportToCsv(kfsRowData row) {
+        return "\""+getData(row)+"\"";
+    }
+
 }

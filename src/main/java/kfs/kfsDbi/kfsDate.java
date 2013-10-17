@@ -116,4 +116,15 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
         this.oraTimestamp = oraTimestamp;
         return this;
     }
+
+    @Override
+    public String appendOracleControlFile() {
+        return " \"TO_DATE(:"+ getColumnName() +", 'yyyy-mm-dd hh24:mi:ss')\"";
+    }
+
+    @Override
+    public String exportToCsv(kfsRowData row) {
+        return sdf.format(getData(row));
+    }
+
 }

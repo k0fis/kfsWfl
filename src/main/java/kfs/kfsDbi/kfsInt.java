@@ -85,4 +85,14 @@ public class kfsInt extends kfsColObject implements kfsDbiColumnComparator {
         return getSortDirection()*getData(t).compareTo(getData(t1));
     }
 
+    @Override
+    public String appendOracleControlFile() {
+        return "";
+    }
+
+    @Override
+    public String exportToCsv(kfsRowData row) {
+        return Integer.toString(getData(row));
+    }
+
 }

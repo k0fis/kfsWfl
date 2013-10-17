@@ -1,20 +1,15 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>kfs</groupId>
     <artifactId>kfsWfl</artifactId>
-    <version>1.1.19</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
-
     <name>kfsWfl</name>
     <url>http://maven.apache.org</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
+    </properties>   
     <build>
         <plugins>
             <plugin>
@@ -26,18 +21,21 @@
                     <target>1.6</target>
                 </configuration>
             </plugin> 
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Author>Pavel Drimalka (c) 2013</Author>
+                            <Mail>pavel.drimalka@vodafone.com</Mail>
+                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>                            
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-    
-    <distributionManagement>
-        <repository>
-            <id>repo</id>
-            <url>https://github.com/k0fis/kfsWfl-mvn/raw/master/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshot-repo</id>
-            <url>https://github.com/k0fis/kfsWfl-mvn/raw/master/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>

@@ -74,6 +74,40 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return t_name;
     }
 
+    public String getOracleLoaderControlFile() {
+        StringBuilder sb = new StringBuilder();
+        sb//
+                .append("load data append into table ")//
+                .append(getName())//
+                .append(" fields terminated by \",\" optionally enclosed by '\"' TRAILING NULLCOLS (");
+        boolean  f= true;
+        for (kfsDbiColumn di : allCols) {
+            if (f) {
+                f = false;
+            } else {
+                sb.append(',');
+            }
+            sb.append("\n  ");
+            sb.append(di.getColumnName()).append(di.appendOracleControlFile());
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
+    public String getCsv(kfsRowData row) {
+        StringBuilder sb = new StringBuilder();
+        boolean  f= true;
+        for (kfsDbiColumn di : allCols) {
+            if (f) {
+                f = false;
+            } else {
+                sb.append(',');
+            }            
+            sb.append(di.exportToCsv(row));
+        }
+        return sb.append("\n").toString();
+    }
+    
     @Override
     public String getInsertInto() {
         String s = "INSERT INTO " + getName() + " ( ";
@@ -191,7 +225,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
         return s.toString();
     }
 
-    public String getDelete(kfsDbiColumn ... wcols) {
+    public String getDelete(kfsDbiColumn... wcols) {
         StringBuilder r = new StringBuilder();
         r.append("DELETE FROM ").append(getName());
         if ((wcols != null) && (wcols.length > 0)) {
@@ -237,14 +271,14 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             if (o == null) {
                 d += "null";
             } else if (o instanceof String) {
-                d += "'" + o.toString() +"'";
+                d += "'" + o.toString() + "'";
             } else {
                 d += o.toString();
             }
         }
         return s + ") VALUES ( " + d + ")";
-    }    
-    
+    }
+
     @Override
     public void psInsertSetParameters(PreparedStatement ps, kfsRowData row) throws SQLException {
         int y = 1;
@@ -411,7 +445,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
             cc.setParam(inx++, ps, rd);
         }
         for (kfsDbiColumn cc : allCols) {
-            if (! ((cc instanceof kfsIntAutoInc) || (cc instanceof kfsLongAutoInc))) {
+            if (!((cc instanceof kfsIntAutoInc) || (cc instanceof kfsLongAutoInc))) {
                 cc.setParam(inx++, ps, rd);
             }
         }
