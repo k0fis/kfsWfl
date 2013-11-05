@@ -3,6 +3,7 @@ package kfs.kfsDbi;
 /**
  *
  * @author pavedrim
+ * @param <T>
  */
 public class kfsPojoObj<T extends kfsDbObject> implements kfsIPojoObj {
 
@@ -24,7 +25,7 @@ public class kfsPojoObj<T extends kfsDbObject> implements kfsIPojoObj {
         return inx;
     }
 
-    public String getCsv() {
+    public String kfsGetCsv() {
         return inx.getCsv(rd);
     }
 }
