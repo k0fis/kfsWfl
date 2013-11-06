@@ -47,14 +47,14 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
     public String getColumnCreateTable(kfsDbServerType serverType) {
         switch (serverType) {
             case kfsDbiOracle:
-                return getColumnName() + (oraTimestamp?" TIMESTAMP ":" DATE ");
+                return getColumnName() + (oraTimestamp ? " TIMESTAMP " : " DATE ");
             case kfsDbiMysql:
             case kfsDbiSybase:
                 return getColumnName() + " DATETIME ";
             case kfsDbiPostgre:
                 return getColumnName() + " timestamp ";
             case kfsDbiSqlite:
-                return getColumnName() + " datetime ";                
+                return getColumnName() + " datetime ";
         }
         return null;
     }
@@ -66,7 +66,7 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
             ps.setNull(inx, java.sql.Types.DATE);
         } else {
             if (super.getObject(row) instanceof Timestamp) {
-                ps.setTimestamp(inx, (Timestamp)super.getObject(row));
+                ps.setTimestamp(inx, (Timestamp) super.getObject(row));
             } else {
                 ps.setTimestamp(inx, new Timestamp(data.getTime()));
             }
@@ -99,7 +99,7 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public int compare(kfsRowData t, kfsRowData t1) {
-        return getSortDirection()*getDate(t).compareTo(getDate(t1));
+        return getSortDirection() * getDate(t).compareTo(getDate(t1));
     }
 
     /**
@@ -119,12 +119,16 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String appendOracleControlFile() {
-        return " \"TO_DATE(:"+ getColumnName() +", 'yyyy-mm-dd hh24:mi:ss')\"";
+        return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss')\"";
     }
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return sdf.format(getData(row));
+        Date d = getData(row);
+        if (d != null) {
+            return sdf.format(d);
+        }
+        return "";
     }
 
 }

@@ -92,7 +92,11 @@ public class kfsInt extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return Integer.toString(getData(row));
+        Integer d = getData(row);
+        if (d == null) {
+            return "";
+        }
+        return Integer.toString(d);
     }
 
 }

@@ -34,7 +34,7 @@ public class kfsDouble extends kfsColObject implements kfsDbiColumnComparator {
     public String getColumnCreateTable(kfsDbServerType serverType) {
         switch (serverType) {
             case kfsDbiSqlite:
-                return getColumnName() + " REAL "+(isColumnNullable()?"NULL":"NOT NULL") + " ";            
+                return getColumnName() + " REAL " + (isColumnNullable() ? "NULL" : "NOT NULL") + " ";
             case kfsDbiOracle:
                 return getColumnName() + " NUMBER " + (isColumnNullable() ? "NULL" : "NOT NULL") + " ";
         }
@@ -73,7 +73,11 @@ public class kfsDouble extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return Double.toString(getData(row));
+        Double d = getData(row);
+        if (d == null) {
+            return "";
+        }
+        return Double.toString(d);
     }
 
 }

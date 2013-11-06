@@ -84,7 +84,11 @@ public class kfsLong extends kfsColObject implements kfsDbiColumnComparator{
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return Long.toString(getData(row));
+        Long d = getData(row);
+        if (d == null) {
+            return "";
+        }
+        return Long.toString(d);
     }
     
 }
