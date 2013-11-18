@@ -113,7 +113,11 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public Object getObject(kfsRowData row) {
-        return ((String) super.getObject(row)).replaceAll("\\p{Cntrl}", ".");
+        Object o = super.getObject(row);
+        if (o == null) {
+            return null;
+        }
+        return ((String) o).replaceAll("\\p{Cntrl}", ".");
     }
 
     @Override
