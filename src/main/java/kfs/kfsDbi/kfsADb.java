@@ -556,7 +556,6 @@ public abstract class kfsADb {
         for (kfsDbObject dt : tabs) {
 
             // oracle disable triggrer
-
             String ct = dt.getCreateTable();
             if ((ct == null) || ct.isEmpty()) {
                 l.log(Level.INFO, "Skip {0} it does not have creatye tablr", dt.getName());

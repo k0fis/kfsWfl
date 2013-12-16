@@ -80,7 +80,7 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
                 .append("load data append into table ")//
                 .append(getName())//
                 .append(" fields terminated by \",\" optionally enclosed by '\"' TRAILING NULLCOLS (");
-        boolean  f= true;
+        boolean f = true;
         for (kfsDbiColumn di : allCols) {
             if (f) {
                 f = false;
@@ -95,19 +95,23 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
 
     public String getCsv(kfsRowData row) {
+        return getCsv(row, allCols);
+    }
+
+    public String getCsv(kfsRowData row, kfsDbiColumn[] columns) {
         StringBuilder sb = new StringBuilder();
-        boolean  f= true;
-        for (kfsDbiColumn di : allCols) {
+        boolean f = true;
+        for (kfsDbiColumn di : columns) {
             if (f) {
                 f = false;
             } else {
                 sb.append(',');
-            }            
+            }
             sb.append(di.exportToCsv(row));
         }
         return sb.append("\n").toString();
     }
-    
+
     @Override
     public String getInsertInto() {
         String s = "INSERT INTO " + getName() + " ( ";
@@ -149,9 +153,13 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
 
     @Override
     public String getCreateTable() {
+        return getCreateTable(allCols);
+    }
+
+    public String getCreateTable(kfsDbiColumn[] columns) {
         String s = "CREATE TABLE " + getName() + " ( ";
         boolean f = true;
-        for (kfsDbiColumn di : allCols) {
+        for (kfsDbiColumn di : columns) {
             if (f) {
                 f = false;
             } else {
