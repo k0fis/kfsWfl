@@ -75,13 +75,16 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
 
     public String getOracleLoaderControlFile() {
+        return getOracleLoaderControlFile(allCols);
+    }
+    public String getOracleLoaderControlFile(kfsDbiColumn []cols) {
         StringBuilder sb = new StringBuilder();
         sb//
                 .append("load data append into table ")//
                 .append(getName())//
                 .append(" fields terminated by \",\" optionally enclosed by '\"' TRAILING NULLCOLS (");
         boolean f = true;
-        for (kfsDbiColumn di : allCols) {
+        for (kfsDbiColumn di : cols) {
             if (f) {
                 f = false;
             } else {
