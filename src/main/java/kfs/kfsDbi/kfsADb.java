@@ -41,7 +41,7 @@ public abstract class kfsADb {
             }
         }
     }
-
+   
     protected void setDboObjects(kfsDbObject... objs) {
         dbObjects = Arrays.asList(objs);
     }

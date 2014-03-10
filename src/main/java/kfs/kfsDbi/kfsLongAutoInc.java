@@ -52,14 +52,18 @@ public class kfsLongAutoInc extends kfsLong {
         return this;
     }
 
+    public String getOraSequenceName(String table_name) {
+        return table_name + "_" + this.getColumnName() + "_SEQ";
+    }
+    
     @Override
     public String[] getCreateTableAddons(kfsDbServerType serverType, String table_name) {
         if (serverType == kfsDbServerType.kfsDbiOracle) {
             ArrayList<String> ret = new ArrayList<String>();
             ret.addAll(Arrays.asList(super.getCreateTableAddons(serverType, table_name)));
-            ret.add("create sequence " + table_name + "_" + this.getColumnName() + "_seq start with 1 increment by 1 maxvalue 999999999999999999 " + (sequenceCycle ? "CYCLE" : "NOCYCLE"));
+            ret.add("create sequence " + getOraSequenceName(table_name) +" start with 1 increment by 1 maxvalue 999999999999999999 " + (sequenceCycle ? "CYCLE" : "NOCYCLE"));
             if (createTrigger) {
-                ret.add("create trigger " + table_name + "_" + this.getColumnName() + "_triger before insert on " + table_name + " for each row begin select " + table_name + "_" + this.getColumnName() + "_seq.nextval into :new." + this.getColumnName() + " from dual; end;");
+                ret.add("create trigger " + table_name + "_" + this.getColumnName() + "_triger before insert on " + table_name + " for each row begin select " + getOraSequenceName(table_name) + ".nextval into :new." + this.getColumnName() + " from dual; end;");
             }
             return ret.toArray(new String[ret.size()]);
         }

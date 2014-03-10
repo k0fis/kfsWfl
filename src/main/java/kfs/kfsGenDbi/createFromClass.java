@@ -101,6 +101,7 @@ public class createFromClass {
     public createFromClass(Class<?> cls, String packageName, String className) throws IntrospectionException {
         this(cls, packageName, className, true, true, false);
     }
+
     public createFromClass(Class<?> cls, String packageName, String className, //
             boolean useOraPartitioning, boolean useAutoId, boolean createSetters) throws IntrospectionException {
         this.cls = cls;
@@ -169,6 +170,10 @@ public class createFromClass {
         }
         sb.append("    }\n\n");
 
+        if (useAutoId) {
+            sb.append("    public String sqlNewId() {\n        return \"SELECT \" + id.getOraSequenceName(getName())+\".nextval FROM DUAL\";\n    }\n\n");
+        }
+
         if (useOraPartitioning) {
             sb.append("    @Override\n"
                     + "    public String getCreateTable() {\n"
@@ -197,9 +202,13 @@ public class createFromClass {
                 + "            super(").append(className).append(".this, row);\n"
                         + "        }\n\n");
         if (useAutoId) {
-            sb.append("        public Long getId() {\n"
-                    + "            return inx.id.getData(rd);\n"
-                    + "        }\n\n");
+            sb
+                    .append("        public Long getId() {\n"
+                            + "            return inx.id.getData(rd);\n"
+                            + "        }\n\n")
+                    .append("        public void setId(Long newId) {\n"
+                            + "            inx.id.setData(newId, rd);\n"
+                            + "        }\n\n");
         }
         for (item i : items) {
             sb.append("        public ").append(i.getJavaClassName()).append(" ").append(i.getGetterJavaName())//
