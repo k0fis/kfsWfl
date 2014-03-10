@@ -27,8 +27,9 @@ public class createFromClass {
         }
 
         String getSetterJavaName() {
-            return 's'+getGetterJavaName().substring(1);
+            return 's' + getGetterJavaName().substring(1);
         }
+
         String getJavaName() {
             String s = meth.getName();
             return Character.toLowerCase(s.charAt(3)) + s.substring(4);
@@ -38,6 +39,10 @@ public class createFromClass {
             Class<?> c = meth.getReturnType();
             if (Timestamp.class.equals(c)) {
                 c = Date.class;
+            } else if (int.class.equals(c)) {
+                c = Integer.class;
+            } else if (long.class.equals(c)) {
+                c = Long.class;
             }
             return c;
         }
@@ -94,10 +99,14 @@ public class createFromClass {
     private final item[] items;
 
     public createFromClass(Class<?> cls, String packageName, String className) throws IntrospectionException {
+        this(cls, packageName, className, true, true, false);
+    }
+    public createFromClass(Class<?> cls, String packageName, String className, //
+            boolean useOraPartitioning, boolean useAutoId, boolean createSetters) throws IntrospectionException {
         this.cls = cls;
-        this.useOraPartitioning = true;
-        this.useAutoId = true;
-        this.createSetters = true;
+        this.useOraPartitioning = useOraPartitioning;
+        this.useAutoId = useAutoId;
+        this.createSetters = createSetters;
         this.packageName = packageName;
         this.className = className;
         ArrayList<item> il = new ArrayList<item>();
