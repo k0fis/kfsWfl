@@ -52,8 +52,33 @@ public class createFromClass {
         }
 
         String getKfsDbiName() {
-            String s = getJavaName();
-            return s;
+            StringBuilder sb = new StringBuilder();
+            String[] r = getJavaName().split("(?=\\p{Lu})");
+            boolean f = true;
+            for (String s : r) {
+                if (f) {
+                    f = false;
+                } else {
+                    sb.append("_");
+                }
+                sb.append(s.toUpperCase());
+            }
+            return sb.toString();
+        }
+
+        String getHumanName() {
+            StringBuilder sb = new StringBuilder();
+            String[] r = getJavaName().split("(?=\\p{Lu})");
+            boolean f = true;
+            for (String s : r) {
+                if (f) {
+                    f = false;
+                } else {
+                    sb.append(" ");
+                }
+                sb.append(s.substring(0, 1).toUpperCase()).append(s.substring(1));
+            }
+            return sb.toString();
         }
 
         String getKfsDbiClass() {
@@ -68,7 +93,7 @@ public class createFromClass {
             boolean r = false;
             StringBuilder sb = new StringBuilder();
             sb.append("new ").append(getKfsDbiClass()).append("(\"").append(getKfsDbiName())
-                    .append("\", \"").append(getKfsDbiName()).append("\"");
+                    .append("\", \"").append(getHumanName()).append("\"");
             if (Date.class.equals(getJavaClass())) {
                 sb.append(", pos++");
                 r = true;
@@ -94,22 +119,25 @@ public class createFromClass {
     private final boolean useOraPartitioning;
     private final boolean useAutoId;
     private final boolean createSetters;
+    private final boolean createList;
     private final String packageName;
     private final String className;
     private final item[] items;
 
     public createFromClass(Class<?> cls, String packageName, String className) throws IntrospectionException {
-        this(cls, packageName, className, true, true, false);
+        this(cls, packageName, className, true, true, false, false);
     }
 
     public createFromClass(Class<?> cls, String packageName, String className, //
-            boolean useOraPartitioning, boolean useAutoId, boolean createSetters) throws IntrospectionException {
+            boolean useOraPartitioning, boolean useAutoId, boolean createSetters,//
+            boolean createList) throws IntrospectionException {
         this.cls = cls;
         this.useOraPartitioning = useOraPartitioning;
         this.useAutoId = useAutoId;
         this.createSetters = createSetters;
         this.packageName = packageName;
         this.className = className;
+        this.createList = createList;
         ArrayList<item> il = new ArrayList<item>();
         for (PropertyDescriptor propertyDescriptor
                 : Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors()) {
@@ -231,6 +259,17 @@ public class createFromClass {
                     + "        }\n");
         }
         sb.append("    }\n");
+        if (createList) {
+            sb.append("\n    public class ").append(className)//
+                    .append("List extends kfsPojoArrayList<").append(className)//
+                    .append(", pojo> {\n" + "\n" + "        public ")//
+                    .append(className).append("List() {\n" + "            super(")//
+                    .append(className).append(".this);\n"
+                            + "        }\n"
+                            + "    }\n\n"
+                    );
+        }
+
         return sb.append("}\n").toString();
     }
 
