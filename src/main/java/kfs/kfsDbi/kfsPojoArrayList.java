@@ -2,6 +2,8 @@ package kfs.kfsDbi;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -65,6 +67,9 @@ public class kfsPojoArrayList<B extends kfsDbObject, T extends kfsPojoObj<B>> im
         lst.clear();
     }
 
+    protected void sort(Comparator<? super T> cmp) {
+        Collections.sort(lst, cmp);
+    }
     
     private final B base;
 
