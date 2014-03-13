@@ -81,10 +81,21 @@ public class createFromClass {
             return sb.toString();
         }
 
+        boolean isFk() {
+            if (!getKfsDbiName().endsWith("Id")) {
+                return false;
+            }
+            String s = getJavaClassName();
+            return (s.equals("Integer") | s.equals("Long"));
+        }
+
         String getKfsDbiClass() {
             String s = getJavaClassName();
             if (s.equals("Integer")) {
                 s = "Int";
+            }
+            if (isFk()) {
+                s += "Fk";
             }
             return "kfs" + s;
         }
@@ -92,19 +103,26 @@ public class createFromClass {
         String getDbiNew() {
             boolean r = false;
             StringBuilder sb = new StringBuilder();
-            sb.append("new ").append(getKfsDbiClass()).append("(\"").append(getKfsDbiName())
-                    .append("\", \"").append(getHumanName()).append("\"");
+            sb.append("new ").append(getKfsDbiClass()).append("(\"").append(getKfsDbiName());
             if (Date.class.equals(getJavaClass())) {
-                sb.append(", pos++");
+                sb.append("\", \"").append(getHumanName()).append("\"").append(", pos++");
                 r = true;
             } else if (String.class.equals(getJavaClass())) {
-                sb.append(", 50, pos++");
+                sb.append("\", \"").append(getHumanName()).append("\"").append(", 50, pos++");
                 r = true;
             } else if (Integer.class.equals(getJavaClass())) {
-                sb.append(", 10, pos++, true");
+                if (isFk()) {
+                    sb.append(", pos++, true");
+                } else {
+                    sb.append("\", \"").append(getHumanName()).append("\"").append(", 10, pos++, true");
+                }
                 r = true;
             } else if (Long.class.equals(getJavaClass())) {
-                sb.append(", 18, pos++, true");
+                if (isFk()) {
+                    sb.append(", pos++, true");
+                } else {
+                    sb.append("\", \"").append(getHumanName()).append("\"").append(", 18, pos++, true");
+                }
                 r = true;
             }
             if (!r) {
