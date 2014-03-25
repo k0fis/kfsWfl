@@ -49,7 +49,7 @@ public class kfsPojoArrayList<B extends kfsDbObject, T extends kfsPojoObj<B>> im
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-       return lst.addAll(c);
+        return lst.addAll(c);
     }
 
     @Override
@@ -70,13 +70,20 @@ public class kfsPojoArrayList<B extends kfsDbObject, T extends kfsPojoObj<B>> im
     protected void sort(Comparator<? super T> cmp) {
         Collections.sort(lst, cmp);
     }
-    
+
     private final B base;
 
     public kfsPojoArrayList(B base) {
         this.base = base;
     }
     private final ArrayList<T> lst = new ArrayList<T>();
+
+    public T getFirst() {
+        if (lst.size() > 0) {
+            return lst.get(0);
+        }
+        return null;
+    }
 
     /**
      *
