@@ -31,6 +31,9 @@ public class kfsBlob extends kfsColObject {
         if (serverType == kfsDbServerType.kfsDbiSqlite) {
             return getColumnName() + " BLOB ";
         }
+        if (serverType == kfsDbServerType.kfsDbiOracle) {
+            return getColumnName() + " BLOB ";
+        }
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
