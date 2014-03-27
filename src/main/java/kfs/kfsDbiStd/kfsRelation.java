@@ -1,9 +1,17 @@
-package kfs.kfsDbi;
+package kfs.kfsDbiStd;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import kfs.kfsDbi.kfsADb;
+import kfs.kfsDbi.kfsDbObject;
+import kfs.kfsDbi.kfsDbServerType;
+import kfs.kfsDbi.kfsIPojoObj;
+import kfs.kfsDbi.kfsInt;
+import kfs.kfsDbi.kfsIntAutoInc;
+import kfs.kfsDbi.kfsPojoObj;
+import kfs.kfsDbi.kfsRowData;
 
 /**
  *
@@ -85,7 +93,7 @@ public class kfsRelation extends kfsDbObject {
     }
 
     @Override
-    public kfsIPojoObj getPojo(kfsRowData rd) {
+    public pjRelation getPojo(kfsRowData rd) {
         return new pjRelation(rd);
     }
 

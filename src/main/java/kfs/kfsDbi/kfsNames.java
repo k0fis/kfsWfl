@@ -4,21 +4,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * This class is simple tool for assemble names by some conventions.
- * Extends ArrayList&lt;String&gt;
+ * This class is simple tool for assemble names by some conventions. Extends ArrayList&lt;String&gt;
  *
  * @author pavedrim
  */
 public class kfsNames extends ArrayList<String> {
 
     /**
-     * add new item - and split this text by specified space and really
-     * space (" ")
+     * add new item - and split this text by specified space and really space (" ")
+     *
      * @param inp - input name
      * @param space - defined space - for example "_"
      * @return this - return itself for concatenate method calling
      */
     public kfsNames add(String inp, String space) {
+        if (inp == null) {
+            return this;
+        }
         ArrayList<String> sa = new ArrayList<String>();
         ArrayList<String> sb = new ArrayList<String>();
         sa.addAll(Arrays.asList(inp.split(space)));
@@ -44,6 +46,7 @@ public class kfsNames extends ArrayList<String> {
 
     /**
      * create java name for names with prefix - especialy for getter/setter
+     *
      * @param prefix
      * @return
      */
@@ -53,6 +56,7 @@ public class kfsNames extends ArrayList<String> {
 
     /**
      * Create Name with javoize convetions
+     *
      * @return javoized name
      */
     public String getJavoizeName() {
@@ -73,6 +77,7 @@ public class kfsNames extends ArrayList<String> {
 
     /**
      * Create name with oracle SQL convetions
+     *
      * @return name in oracle convetions
      */
     public String getOraclizeName() {
@@ -112,6 +117,6 @@ public class kfsNames extends ArrayList<String> {
     }
 
     public static String getCapitalize(String s) {
-        return (s.length() > 1)? s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase():s.toUpperCase();
+        return (s.length() > 1) ? s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase() : s.toUpperCase();
     }
 }

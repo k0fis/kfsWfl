@@ -1,5 +1,6 @@
 package kfs.kfsDbi;
 
+import kfs.kfsDbiStd.kfsRelation;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -139,6 +140,11 @@ public abstract class kfsADb {
         conn.commit();
     }
 
+    public void rollback() throws SQLException {
+        conn.rollback();
+    }
+    
+    
     public void done(boolean commit, boolean rollback) throws SQLException {
         if (conn == null) {
             return;
