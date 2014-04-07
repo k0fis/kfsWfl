@@ -44,12 +44,17 @@ public class kfsOneStringTable extends kfsDbObject {
         public void setData(String newVal) {
             inx.data.setData(newVal, rd);
         }
+
+        @Override
+        public String toString() {
+            return getData();
+        }
     }
-    
+
     public class pjOneStringList extends kfsPojoArrayList<kfsOneStringTable, pjOneString> {
 
         public pjOneStringList() {
             super(kfsOneStringTable.this);
         }
-    }    
+    }
 }
