@@ -28,7 +28,7 @@
                     <archive>
                         <manifestEntries>
                             <Author>Pavel Drimalka (c) 2013</Author>
-                            <Mail>pavel.drimalka@vodafone.com</Mail>
+                            <Mail>pavel.drimalka@gmail.com</Mail>
                         </manifestEntries>
                         <manifest>
                             <addClasspath>true</addClasspath>
