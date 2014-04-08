@@ -44,6 +44,24 @@ public class kfsNames extends ArrayList<String> {
         return true;
     }
 
+    public kfsNames addJavoizedString(String inp) {
+        if ((inp == null) || (inp.length() <= 0)) {
+            return this;
+        }
+        int e,b = 0;
+        for (e = 1; e < inp.length(); e++) {
+            char d = inp.charAt(e);
+            if (Character.isUpperCase(d)) {
+                add(inp.substring(b, e));
+                b = e;
+            }
+        }
+        if (e != b) {
+            add(inp.substring(b, e));
+        }
+        return this;
+    }
+    
     /**
      * create java name for names with prefix - especialy for getter/setter
      *
