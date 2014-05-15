@@ -76,7 +76,8 @@ public class kfsPojoArrayList<B extends kfsDbObject, T extends kfsPojoObj<B>> im
     public kfsPojoArrayList(B base) {
         this.base = base;
     }
-    private final ArrayList<T> lst = new ArrayList<T>();
+    
+    protected final ArrayList<T> lst = new ArrayList<T>();
 
     public T getFirst() {
         if (lst.size() > 0) {
