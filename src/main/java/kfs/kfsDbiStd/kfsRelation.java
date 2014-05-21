@@ -7,6 +7,7 @@ import java.util.Iterator;
 import kfs.kfsDbi.kfsADb;
 import kfs.kfsDbi.kfsDbObject;
 import kfs.kfsDbi.kfsDbServerType;
+import kfs.kfsDbi.kfsDbiColumn;
 import kfs.kfsDbi.kfsIPojoObj;
 import kfs.kfsDbi.kfsInt;
 import kfs.kfsDbi.kfsIntAutoInc;
@@ -35,6 +36,14 @@ public class kfsRelation extends kfsDbObject {
         id2 = new kfsInt(id2Name, id2Name, kfsIntAutoInc.idMaxLen, pos++, false);
         super.setIdsColumns(id);
         super.setColumns(id, id1, id2);
+    }
+
+    public String getSelect1By2() {
+        return getSelect(getName(), new kfsDbiColumn[]{id1}, new kfsDbiColumn[]{id2});
+    }
+
+    public String getSelect2By1() {
+        return getSelect(getName(), new kfsDbiColumn[]{id2}, new kfsDbiColumn[]{id1});
     }
 
     public pjRelation create(int id1, int id2) {
@@ -66,6 +75,15 @@ public class kfsRelation extends kfsDbObject {
 
     public void psSelectById2(PreparedStatement ps, int id2) throws SQLException {
         ps.setInt(1, id2);
+    }
+
+    public String sqlDeleteById1Id2() {
+        return getDelete(id1, id2);
+    }
+
+    public void psDeleteById1Id2(PreparedStatement ps, int id1i, int id2i) throws SQLException {
+        ps.setInt(1, id1i);
+        ps.setInt(2, id2i);
     }
 
     public String sqlDeleteById() {

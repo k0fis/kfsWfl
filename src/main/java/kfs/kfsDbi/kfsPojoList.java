@@ -7,6 +7,9 @@ import java.util.Iterator;
 /**
  *
  * @author pavedrim
+ * @param <B> DBO object
+ * @param <ID> ID type - for unique in list identification
+ * @param <T> pojo type - based on <B>
  */
 public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> implements kfsADb.loadCB, Collection<T> {
 
@@ -118,4 +121,5 @@ public class kfsPojoList<B extends kfsDbObject, ID, T extends kfsPojoObj<B>> imp
     public Collection<T> collection() {
         return lst.values();
     }
+    
 }
