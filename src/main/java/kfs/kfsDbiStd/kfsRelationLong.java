@@ -44,6 +44,16 @@ public class kfsRelationLong extends kfsDbObject {
     public String getSelect2By1() {
         return getSelect(getName(), new kfsDbiColumn[]{id2}, new kfsDbiColumn[]{id1});
     }
+    
+    public String getSelect1By2(String innerSql) {
+        return getSelect(getName(), new kfsDbiColumn[]{id1}) + " WHERE " + id2.getColumnName() 
+                + " IN ( " + innerSql +" ) ";
+    }
+    
+    public String getSelect2By1(String innerSql) {
+        return getSelect(getName(), new kfsDbiColumn[]{id2}) + " WHERE " + id1.getColumnName() 
+                + " IN ( " + innerSql +" ) ";
+    }
 
     public pjRelation create(long id1, long id2) {
         kfsRowData rd = new kfsRowData(this);

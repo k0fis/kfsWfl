@@ -8,7 +8,6 @@ import kfs.kfsDbi.kfsADb;
 import kfs.kfsDbi.kfsDbObject;
 import kfs.kfsDbi.kfsDbServerType;
 import kfs.kfsDbi.kfsDbiColumn;
-import kfs.kfsDbi.kfsIPojoObj;
 import kfs.kfsDbi.kfsInt;
 import kfs.kfsDbi.kfsIntAutoInc;
 import kfs.kfsDbi.kfsPojoObj;
@@ -44,6 +43,16 @@ public class kfsRelation extends kfsDbObject {
 
     public String getSelect2By1() {
         return getSelect(getName(), new kfsDbiColumn[]{id2}, new kfsDbiColumn[]{id1});
+    }
+
+    public String getSelect1By2(String innerSql) {
+        return getSelect(getName(), new kfsDbiColumn[]{id1}) + " WHERE " + id2.getColumnName()
+                + " IN ( " + innerSql + " ) ";
+    }
+
+    public String getSelect2By1(String innerSql) {
+        return getSelect(getName(), new kfsDbiColumn[]{id2}) + " WHERE " + id1.getColumnName()
+                + " IN ( " + innerSql + " ) ";
     }
 
     public pjRelation create(int id1, int id2) {
