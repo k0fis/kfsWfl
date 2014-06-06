@@ -14,7 +14,7 @@ public interface kfsDbiTable {
     String getLabel();
     String getInsertInto();
     String getInsertIntoAll();
-    String getCreateTable();
+    String getCreateTable(String schema);
     String []getCreateTableAddons();
     String getSelect();
     String getDelete();

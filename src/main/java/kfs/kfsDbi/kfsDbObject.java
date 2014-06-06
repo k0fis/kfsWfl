@@ -156,12 +156,17 @@ public class kfsDbObject implements kfsDbiTable, kfsTableDesc, Comparator<kfsRow
     }
 
     @Override
-    public String getCreateTable() {
-        return getCreateTable(allCols);
+    public String getCreateTable(String schema) {
+        return getCreateTable(schema, allCols);
     }
 
-    public String getCreateTable(kfsDbiColumn[] columns) {
-        String s = "CREATE TABLE " + getName() + " ( ";
+    public String getCreateTable(String schema, kfsDbiColumn[] columns) {
+        if ((schema == null || schema.length() <= 0)) {
+            schema = "";
+        } else {
+            schema += ".";
+        }
+        String s = "CREATE TABLE " + schema + getName() + " ( ";
         boolean f = true;
         for (kfsDbiColumn di : columns) {
             if (f) {

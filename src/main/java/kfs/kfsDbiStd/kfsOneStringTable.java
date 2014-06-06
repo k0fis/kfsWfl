@@ -18,11 +18,11 @@ public class kfsOneStringTable extends kfsDbObject {
     }
 
     @Override
-    public String getCreateTable() {
+    public String getCreateTable(String schema) {
         if (getName() == null) {
             return null;
         } else {
-            return super.getCreateTable();
+            return super.getCreateTable(schema);
         }
     }
 
