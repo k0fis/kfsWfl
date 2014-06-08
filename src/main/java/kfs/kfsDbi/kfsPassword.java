@@ -11,17 +11,30 @@ import java.util.logging.Logger;
  */
 public class kfsPassword extends kfsString {
 
+    private final String prefix;
+
+    public kfsPassword(String name, int pos) {
+        this(name, pos, "MD5:");
+    }
+
+    @Deprecated
     public kfsPassword(String name, String label, int pos) {
-        super(name, label, 50, pos, defaultCharSet);
+        this(name, pos, "");
+    }
+
+    public kfsPassword(String name, int pos, String prefix) {
+        super(name, name, 50, pos, defaultCharSet);
+        this.prefix = prefix;
     }
 
     public void encode(String input, kfsRowData rd) {
-        setString(encode0(input), rd);
+        setString(prefix+encode0(input), rd);
     }
 
     public boolean equalsPass(String input, kfsRowData rd) {
-        return getString(rd).equals(encode0(input));
+        return getString(rd).equals(prefix+encode0(input));
     }
+
     private static MessageDigest md = null;
 
     public static String encode0(String input) {
