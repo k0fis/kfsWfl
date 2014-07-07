@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private boolean oraTimestamp = false;
 
     public kfsDate(final String name, final String label, final int position) {
@@ -119,14 +120,22 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String appendOracleControlFile() {
-        return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss')\"";
+        if (isOraTimestamp()) {
+            return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss.FF')\"";
+        } else {
+            return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss')\"";
+        }
     }
 
     @Override
     public String exportToCsv(kfsRowData row) {
         Date d = getData(row);
         if (d != null) {
-            return sdf.format(d);
+            if (isOraTimestamp()) {
+                return sdf2.format(d);
+            } else {
+                return sdf.format(d);
+            }
         }
         return "";
     }
