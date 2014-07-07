@@ -132,7 +132,7 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return "\""+getData(row)+"\"";
+        return "\""+getData(row).replaceAll("\"", "\"\"")+"\"";
     }
 
 }
