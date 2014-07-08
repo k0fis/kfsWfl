@@ -121,7 +121,7 @@ public class kfsDate extends kfsColObject implements kfsDbiColumnComparator {
     @Override
     public String appendOracleControlFile() {
         if (isOraTimestamp()) {
-            return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss.FF')\"";
+            return " \"TO_TIMESTAMP(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss.FF')\"";
         } else {
             return " \"TO_DATE(:" + getColumnName() + ", 'yyyy-mm-dd hh24:mi:ss')\"";
         }
