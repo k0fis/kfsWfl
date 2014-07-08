@@ -127,7 +127,7 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String appendOracleControlFile() {
-        return " \"SUBSTR(:"+ getColumnName() +", 1, "+ getColumnMaxLength() +")\"";
+        return " \"SUBSTR(:"+ getColumnName() +", 1, "+ (getColumnMaxLength()-1) +")\"";
     }
 
     @Override
