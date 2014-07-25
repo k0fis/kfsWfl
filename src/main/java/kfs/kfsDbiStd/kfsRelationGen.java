@@ -9,26 +9,28 @@ import kfs.kfsDbi.*;
 /**
  *
  * @author pavedrim
- * @param <DBI>
- * @param <T>
+ * @param <DBI1>
+ * @param <T1>
+ * @param <DBI2>
+ * @param <T2>
  */
-public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbObject {
+public class kfsRelationGen<DBI1 extends kfsColObject, T1, DBI2 extends kfsColObject, T2> extends kfsDbObject {
 
     private final kfsLongAutoInc id;
-    private final DBI id1;
-    private final DBI id2;
+    private final DBI1 id1;
+    private final DBI2 id2;
+    private final kfsICreateDbc<DBI1, T1> dboc1;
+    private final kfsICreateDbc<DBI2, T2> dboc2;
 
-    public static interface createDbo<DBI extends kfsColObject> {
-
-        DBI createDbo(String name, int pos);
-    }
-
-    public kfsRelationGen(kfsDbServerType st, String tableName, String id1Name, String id2Name, createDbo<DBI> dboc) {
+    public kfsRelationGen(kfsDbServerType st, String tableName, 
+            kfsICreateDbc<DBI1, T1> dboc1, kfsICreateDbc<DBI2, T2> dboc2) {
         super(st, tableName);
         int pos = 0;
+        this.dboc1 = dboc1;
+        this.dboc2 = dboc2;
         super.setColumns((id = new kfsLongAutoInc("ID", pos++)),
-                (id1 = dboc.createDbo(id1Name, pos++)),
-                (id2 = dboc.createDbo(id2Name, pos++)));
+                (id1 = dboc1.createDbo(pos++)),
+                (id2 = dboc2.createDbo(pos++)));
         super.setIdsColumns(id);
     }
 
@@ -50,7 +52,7 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
                 + " IN ( " + innerSql + " ) ";
     }
 
-    public pjRelation create(T id1, T id2) {
+    public pjRelation create(T1 id1, T2 id2) {
         kfsRowData rd = new kfsRowData(this);
         this.id1.setObject(id1, rd);
         this.id2.setObject(id2, rd);
@@ -69,27 +71,25 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
         return getSelect(getName(), getColumns(), id2);
     }
 
-    protected abstract void setPsData(PreparedStatement ps, int inx, T obj) throws SQLException;
-
-    public void psSelectById(PreparedStatement ps, T id) throws SQLException {
-        setPsData(ps, 1, id);
+    public void psSelectById(PreparedStatement ps, long id) throws SQLException {
+        ps.setLong(1, id);
     }
 
-    public void psSelectById1(PreparedStatement ps, T id1) throws SQLException {
-        setPsData(ps, 1, id1);
+    public void psSelectById1(PreparedStatement ps, T1 id1) throws SQLException {
+        dboc1.setPsData(ps, 1, id1);
     }
 
-    public void psSelectById2(PreparedStatement ps, T id2) throws SQLException {
-        setPsData(ps, 1, id2);
+    public void psSelectById2(PreparedStatement ps, T2 id2) throws SQLException {
+        dboc2.setPsData(ps, 1, id2);
     }
 
     public String sqlDeleteById1Id2() {
         return getDelete(id1, id2);
     }
 
-    public void psDeleteById1Id2(PreparedStatement ps, T id1i, T id2i) throws SQLException {
-        setPsData(ps, 1, id1i);
-        setPsData(ps, 2, id2i);
+    public void psDeleteById1Id2(PreparedStatement ps, T1 id1i, T2 id2i) throws SQLException {
+        dboc1.setPsData(ps, 1, id1i);
+        dboc2.setPsData(ps, 2, id2i);
     }
 
     public String sqlDeleteById() {
@@ -104,19 +104,17 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
         return getDelete(id2);
     }
 
-    public void psDeleteById(PreparedStatement ps, T id) throws SQLException {
-        setPsData(ps, 1, id);
+    public void psDeleteById(PreparedStatement ps, long id) throws SQLException {
+        ps.setLong(1, id);
 
     }
 
-    public void psDeleteById1(PreparedStatement ps, T id1) throws SQLException {
-        setPsData(ps, 1, id1);
-
+    public void psDeleteById1(PreparedStatement ps, T1 id1) throws SQLException {
+        dboc1.setPsData(ps, 1, id1);
     }
 
-    public void psDeleteById2(PreparedStatement ps, T id2) throws SQLException {
-        setPsData(ps, 1, id2);
-
+    public void psDeleteById2(PreparedStatement ps, T2 id2) throws SQLException {
+        dboc2.setPsData(ps, 1, id2);
     }
 
     @Override
@@ -134,12 +132,12 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
             return inx.id.getData(rd);
         }
 
-        public T getId1() {
-            return (T) inx.id1.getObject(rd);
+        public T1 getId1() {
+            return (T1) inx.id1.getObject(rd);
         }
 
-        public T getId2() {
-            return (T) inx.id2.getObject(rd);
+        public T2 getId2() {
+            return (T2) inx.id2.getObject(rd);
         }
 
         @Override
@@ -152,7 +150,7 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
 
         private final ArrayList<pjRelation> lst = new ArrayList<pjRelation>();
 
-        public pjRelation find(T id1, T id2) {
+        public pjRelation find(T1 id1, T2 id2) {
             for (pjRelation r : lst) {
                 if (r.getId1().equals(id1) && r.getId2().equals(id2)) {
                     return r;
@@ -180,11 +178,11 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
             return lst.iterator();
         }
 
-        public Iterator<pjRelation> getById1Iterator(final T id1) {
+        public Iterator<pjRelation> getById1Iterator(final T1 id1) {
             return new IteratorId(lst.iterator(), id1, null);
         }
 
-        public Iterable<pjRelation> getById1(final T id1) {
+        public Iterable<pjRelation> getById1(final T1 id1) {
             return new Iterable<pjRelation>() {
                 @Override
                 public Iterator<pjRelation> iterator() {
@@ -193,7 +191,7 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
             };
         }
 
-        public Iterable<pjRelation> getById2(final T id2) {
+        public Iterable<pjRelation> getById2(final T2 id2) {
             return new Iterable<pjRelation>() {
                 @Override
                 public Iterator<pjRelation> iterator() {
@@ -206,11 +204,11 @@ public abstract class kfsRelationGen<DBI extends kfsColObject, T> extends kfsDbO
     private class IteratorId implements Iterator<pjRelation> {
 
         private final Iterator<pjRelation> lst;
-        private final T id1;
-        private final T id2;
+        private final T1 id1;
+        private final T2 id2;
         private pjRelation next;
 
-        IteratorId(Iterator<pjRelation> lst, T id1, T id2) {
+        IteratorId(Iterator<pjRelation> lst, T1 id1, T2 id2) {
             this.lst = lst;
             this.id1 = id1;
             this.id2 = id2;
