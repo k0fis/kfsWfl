@@ -127,12 +127,20 @@ public class kfsString extends kfsColObject implements kfsDbiColumnComparator {
 
     @Override
     public String appendOracleControlFile() {
-        return " \"SUBSTR(:"+ getColumnName() +", 1, "+ (getColumnMaxLength()) +")\"";
+        return " \"SUBSTR(:" + getColumnName() + ", 1, " + (getColumnMaxLength()) + ")\"";
     }
 
     @Override
     public String exportToCsv(kfsRowData row) {
-        return "\""+getData(row).replaceAll("\"", "\"\"").replaceAll("\\p{Cntrl}", "")+"\"";
+        String r = getData(row);
+        if (r == null) {
+            r = "";
+        }
+        r = r.replaceAll("\"", "'").replaceAll("\\p{Cntrl}", "");
+        if (r.length() > maxLength) {
+            r = r.substring(0, maxLength - 1);
+        }
+        return "\"" + r + "\"";
     }
 
 }
