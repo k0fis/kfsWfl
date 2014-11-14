@@ -71,6 +71,14 @@ public class kfsRelationGen<DBI1 extends kfsColObject, T1, DBI2 extends kfsColOb
         return getSelect(getName(), getColumns(), id2);
     }
 
+    public void psSelectByIds(PreparedStatement ps, T1 id1, T2 id2) throws SQLException {
+        dboc1.setPsData(ps, 1, id1);
+        dboc2.setPsData(ps, 2, id2);
+    }
+    public String sqlSelectByIds() {
+        return getSelect(getName(), getColumns(), id1, id2);
+    }
+
     public void psSelectById(PreparedStatement ps, long id) throws SQLException {
         ps.setLong(1, id);
     }
